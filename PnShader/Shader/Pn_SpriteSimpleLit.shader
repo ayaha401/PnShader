@@ -4,6 +4,11 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
     {
         // Main
         _MainTex("Sprite Texture", 2D) = "white" {}
+        _SubTex("Sub Texture", 2D) = "black" {}
+
+        // Outline
+        _UseOutline("Use Outline", int) = 0
+        _OutlineColor("Outline Color", Color) = (1,1,1,1)
 
         // Stencil
         _HideColor("Hide Color", Color) = (1,1,1,1)
@@ -35,48 +40,23 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
 
             Pass
             {
+                Name "Universal2D"
                 Tags
-                { 
+                {
                     "LightMode" = "Universal2D" 
                 }
 
                 HLSLPROGRAM
+                #pragma vertex UnlitVertex
+                #pragma fragment UnlitFragment
+                #pragma multi_compile _ DEBUG_DISPLAY
                 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
                 #if defined(DEBUG_DISPLAY)
                 #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/InputData2D.hlsl"
                 #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/SurfaceData2D.hlsl"
                 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging2D.hlsl"
                 #endif
-
-                #pragma vertex UnlitVertex
-                #pragma fragment UnlitFragment
-
-                #pragma multi_compile _ DEBUG_DISPLAY
-
-                struct Attributes
-                {
-                    float3 positionOS   : POSITION;
-                    float4 color        : COLOR;
-                    float2 uv           : TEXCOORD0;
-                    UNITY_VERTEX_INPUT_INSTANCE_ID
-                };
-
-                struct Varyings
-                {
-                    float4  positionCS  : SV_POSITION;
-                    half4   color       : COLOR;
-                    float2  uv          : TEXCOORD0;
-                    #if defined(DEBUG_DISPLAY)
-                    float3  positionWS  : TEXCOORD2;
-                    #endif
-                    UNITY_VERTEX_OUTPUT_STEREO
-                };
-
-                TEXTURE2D(_MainTex);
-                SAMPLER(sampler_MainTex);
-                half4 _MainTex_ST;
-                float4 _Color;
-                half4 _RendererColor;
+                #include "Assets/AyahaShader/PnShader/Shader/Pn_SpriteSimpleLitCore.hlsl"
 
                 Varyings UnlitVertex(Attributes v)
                 {
@@ -95,7 +75,16 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
 
                 half4 UnlitFragment(Varyings i) : SV_Target
                 {
+                    // Main
                     float4 mainTex = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+                    
+                    // Outline
+                    const float outline = SAMPLE_TEXTURE2D(_SubTex, sampler_MainTex, i.uv).r;
+                    float3 outlineCol = (outline.xxx * _OutlineColor) * _UseOutline;
+                    float outlineAlpha = (outline * _OutlineColor.a) * _UseOutline;
+
+                    // LastColor
+                    float4 lastCol = float4(mainTex.rgb + outlineCol, mainTex.a * i.color.a + outlineAlpha);
 
                     #if defined(DEBUG_DISPLAY)
                     SurfaceData2D surfaceData;
@@ -112,13 +101,14 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                     }
                     #endif
 
-                    return mainTex;
+                    return lastCol;
                 }
                 ENDHLSL
             }
 
             Pass
             {
+                Name "UniversalForward"
                 Tags 
                 { 
                     "LightMode" = "UniversalForward"
@@ -127,42 +117,16 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 }
 
                 HLSLPROGRAM
+                #pragma vertex UnlitVertex
+                #pragma fragment UnlitFragment
+                #pragma multi_compile_fragment _ DEBUG_DISPLAY
                 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
                 #if defined(DEBUG_DISPLAY)
                 #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/InputData2D.hlsl"
                 #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/SurfaceData2D.hlsl"
                 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging2D.hlsl"
                 #endif
-
-                #pragma vertex UnlitVertex
-                #pragma fragment UnlitFragment
-
-                #pragma multi_compile_fragment _ DEBUG_DISPLAY
-
-                struct Attributes
-                {
-                    float3 positionOS   : POSITION;
-                    float4 color        : COLOR;
-                    float2 uv           : TEXCOORD0;
-                    UNITY_VERTEX_INPUT_INSTANCE_ID
-                };
-
-                struct Varyings
-                {
-                    float4  positionCS      : SV_POSITION;
-                    float4  color           : COLOR;
-                    float2  uv              : TEXCOORD0;
-                    #if defined(DEBUG_DISPLAY)
-                    float3  positionWS      : TEXCOORD2;
-                    #endif
-                    UNITY_VERTEX_OUTPUT_STEREO
-                };
-
-                TEXTURE2D(_MainTex);
-                SAMPLER(sampler_MainTex);
-                float4 _MainTex_ST;
-                float4 _Color;
-                half4 _RendererColor;
+                #include "Assets/AyahaShader/PnShader/Shader/Pn_SpriteSimpleLitCore.hlsl"
 
                 Varyings UnlitVertex(Attributes attributes)
                 {
@@ -181,7 +145,16 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
 
                 float4 UnlitFragment(Varyings i) : SV_Target
                 {
+                    // Main
                     float4 mainTex = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+
+                    // Outline
+                    float outline = SAMPLE_TEXTURE2D(_SubTex, sampler_MainTex, i.uv).r;
+                    float3 outlineCol = (outline.xxx * _OutlineColor) * _UseOutline;
+                    float outlineAlpha = (outline * _OutlineColor.a) * _UseOutline;
+
+                    // LastColor
+                    float4 lastCol = float4(mainTex.rgb + outlineCol, mainTex.a * i.color.a + outlineAlpha);
 
                     #if defined(DEBUG_DISPLAY)
                     SurfaceData2D surfaceData;
@@ -198,7 +171,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                     }
                     #endif
 
-                    return mainTex;
+                    return lastCol;
                 }
                 ENDHLSL
             }
@@ -247,8 +220,11 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
 
                 TEXTURE2D(_MainTex);
                 SAMPLER(sampler_MainTex);
-                float4 _MainTex_ST;
-                float4 _HideColor;
+                TEXTURE2D(_SubTex);
+
+                // Main
+                uniform float4 _MainTex_ST;
+                uniform float4 _HideColor;
 
                 Varyings UnlitVertex(Attributes attributes)
                 {

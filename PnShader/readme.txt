@@ -1,2 +1,2 @@
-Version1.2.0
-・Pn_SimpleLitでもEditor拡張されて表示されるようになった
+Version1.3.0
+・SpriteSimpleLitでアウトラインを扱うことができるようになった

@@ -600,5 +600,4 @@ Shader "Universal Render Pipeline/Pn/SimpleLit"
 
     Fallback  "Hidden/Universal Render Pipeline/FallbackError"
     CustomEditor "AyahaShader.Pn.Pn_SimpleLitGUI"
-    // CustomEditor "UnityEditor.Rendering.Universal.ShaderGUI.SimpleLitShader"
 }

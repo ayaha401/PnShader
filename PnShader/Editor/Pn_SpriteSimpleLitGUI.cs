@@ -7,6 +7,11 @@ namespace AyahaShader.Pn
     {
         // Main
         private MaterialProperty mainTex;
+        private MaterialProperty subTex;
+
+        // Outline
+        private MaterialProperty useOutline;
+        private MaterialProperty outlineColor;
 
         // Stencil
         private MaterialProperty hideColor;
@@ -15,6 +20,7 @@ namespace AyahaShader.Pn
         private MaterialProperty stencilOp;
 
         private bool isBaseUi = false;
+        private bool useOutlineFoldout = false;
         private bool advancedSettingsFoldout = false;
 
         public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] prop)
@@ -38,8 +44,29 @@ namespace AyahaShader.Pn
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
                 materialEditor.TextureProperty(mainTex, "MainTex");
+                materialEditor.TextureProperty(subTex, "SubTex");
                 materialEditor.ColorProperty(hideColor, "HideColor");
             }
+
+            if(useOutline != null)
+            {
+                useOutlineFoldout = material.GetInt("_UseOutline") == 1 ? true : false;
+                useOutlineFoldout = PnCustomUI.ToggleFoldout("Outline", useOutlineFoldout);
+                if (useOutlineFoldout)
+                {
+                    material.SetInt("_UseOutline", 1);
+                    using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+                    {
+                        materialEditor.ShaderProperty(outlineColor, new GUIContent("OutlineColor"));
+                    }
+                }
+                else
+                {
+                    material.SetInt("_UseOutline", 0);
+                }
+            }
+            
+            
 
             PnCustomUI.GUIPartition();
 
@@ -62,6 +89,11 @@ namespace AyahaShader.Pn
         {
             // Main
             mainTex = FindProperty("_MainTex", _Prop, false);
+            subTex = FindProperty("_SubTex", _Prop, false);
+
+            // Outline
+            useOutline = FindProperty("_UseOutline", _Prop, false);
+            outlineColor = FindProperty("_OutlineColor", _Prop, false);
 
             // Stencil
             hideColor = FindProperty("_HideColor", _Prop, false);
