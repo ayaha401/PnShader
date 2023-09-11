@@ -43,6 +43,7 @@ namespace AyahaShader.Pn
 
             PnCustomUI.GUIPartition();
 
+            // アドバイス設定
             advancedSettingsFoldout = PnCustomUI.Foldout("Advanced Settings", advancedSettingsFoldout);
             if (advancedSettingsFoldout)
             {

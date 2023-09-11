@@ -1,2 +1,2 @@
-Version1.1.0
-・HideColorの調整可能にした
+Version1.2.0
+・Pn_SimpleLitでもEditor拡張されて表示されるようになった
