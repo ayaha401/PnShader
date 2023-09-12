@@ -12,6 +12,7 @@ namespace AyahaShader.Pn
         // Outline
         private MaterialProperty useOutline;
         private MaterialProperty outlineColor;
+        private MaterialProperty hideOutlineColor;
 
         // Stencil
         private MaterialProperty hideColor;
@@ -58,6 +59,7 @@ namespace AyahaShader.Pn
                     using (new EditorGUILayout.VerticalScope(GUI.skin.box))
                     {
                         materialEditor.ShaderProperty(outlineColor, new GUIContent("OutlineColor"));
+                        materialEditor.ShaderProperty(hideOutlineColor, new GUIContent("HideOutlineColor"));
                     }
                 }
                 else
@@ -66,8 +68,6 @@ namespace AyahaShader.Pn
                 }
             }
             
-            
-
             PnCustomUI.GUIPartition();
 
             // アドバイス設定
@@ -94,6 +94,7 @@ namespace AyahaShader.Pn
             // Outline
             useOutline = FindProperty("_UseOutline", _Prop, false);
             outlineColor = FindProperty("_OutlineColor", _Prop, false);
+            hideOutlineColor = FindProperty("_HideOutlineColor", _Prop, false);
 
             // Stencil
             hideColor = FindProperty("_HideColor", _Prop, false);

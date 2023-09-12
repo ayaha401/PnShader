@@ -19,12 +19,12 @@ namespace AyahaShader.Pn
             var e = Event.current;
 
             var foldoutRect = new Rect(rect.x + 4f, rect.y + 2f, 13f, 13f);
-            if (e.type == EventType.Repaint)
+            if (e.type == UnityEngine.EventType.Repaint)
             {
                 EditorStyles.foldout.Draw(foldoutRect, false, false, value, false);
             }
 
-            if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition))
+            if (e.type == UnityEngine.EventType.MouseDown && rect.Contains(e.mousePosition))
             {
                 value = !value;
                 e.Use();
@@ -47,12 +47,12 @@ namespace AyahaShader.Pn
             var e = Event.current;
 
             var toggleRect = new Rect(rect.x + 4f, rect.y + 2f, 13f, 13f);
-            if (e.type == EventType.Repaint)
+            if (e.type == UnityEngine.EventType.Repaint)
             {
                 EditorStyles.toggle.Draw(toggleRect, false, false, value, false);
             }
 
-            if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition))
+            if (e.type == UnityEngine.EventType.MouseDown && rect.Contains(e.mousePosition))
             {
                 value = !value;
                 e.Use();

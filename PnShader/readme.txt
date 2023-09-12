@@ -1,2 +1,2 @@
-Version1.3.0
-・SpriteSimpleLitでアウトラインを扱うことができるようになった
+Version1.4.0
+・SpriteSimpleLitで隠れた時用アウトラインを扱うことができるようになった
