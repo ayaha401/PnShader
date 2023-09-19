@@ -21,9 +21,6 @@ namespace AyahaShader.Pn
         private MaterialProperty stencilCompMode;
         private MaterialProperty stencilOp;
 
-        // Billboard
-        private MaterialProperty useBillboard;
-
         private bool isBaseUi = false;
         private bool useOutlineFoldout = false;
         private bool advancedSettingsFoldout = false;
@@ -55,11 +52,11 @@ namespace AyahaShader.Pn
 
             if(useOutline != null)
             {
-                useOutlineFoldout = material.GetInt("_UseOutline") == 1 ? true : false;
+                useOutlineFoldout = material.GetInt(PnSpriteSimpleLitPropNames.USE_OUTLINE_PROP_NAME) == 1 ? true : false;
                 useOutlineFoldout = PnCustomUI.ToggleFoldout("Outline", useOutlineFoldout);
                 if (useOutlineFoldout)
                 {
-                    material.SetInt("_UseOutline", 1);
+                    material.SetInt(PnSpriteSimpleLitPropNames.USE_OUTLINE_PROP_NAME, 1);
                     using (new EditorGUILayout.VerticalScope(GUI.skin.box))
                     {
                         materialEditor.ShaderProperty(outlineColor, new GUIContent("OutlineColor"));
@@ -68,16 +65,16 @@ namespace AyahaShader.Pn
                 }
                 else
                 {
-                    material.SetInt("_UseOutline", 0);
+                    material.SetInt(PnSpriteSimpleLitPropNames.USE_OUTLINE_PROP_NAME, 0);
                 }
             }
 
             PnCustomUI.Title("Billboard");
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
-                bool useBillboardToggle = material.GetInt("_UseBillboard") == 1 ? true : false;
+                bool useBillboardToggle = material.GetInt(PnSpriteSimpleLitPropNames.USE_BILLBOARD_PROP_NAME) == 1 ? true : false;
                 useBillboardToggle = GUILayout.Toggle(useBillboardToggle, new GUIContent("Use Billboard"));
-                material.SetInt("_UseBillboard", Convert.ToInt32(useBillboardToggle));
+                material.SetInt(PnSpriteSimpleLitPropNames.USE_BILLBOARD_PROP_NAME, Convert.ToInt32(useBillboardToggle));
             }
 
 
@@ -99,22 +96,19 @@ namespace AyahaShader.Pn
         private void FindProperties(MaterialProperty[] _Prop)
         {
             // Main
-            mainTex = FindProperty("_MainTex", _Prop, false);
-            subTex = FindProperty("_SubTex", _Prop, false);
+            mainTex = FindProperty(PnSpriteSimpleLitPropNames.MAIN_TEX_PROP_NAME, _Prop, false);
+            subTex = FindProperty(PnSpriteSimpleLitPropNames.SUB_TEX_PROP_NAME, _Prop, false);
 
             // Outline
-            useOutline = FindProperty("_UseOutline", _Prop, false);
-            outlineColor = FindProperty("_OutlineColor", _Prop, false);
-            hideOutlineColor = FindProperty("_HideOutlineColor", _Prop, false);
+            useOutline = FindProperty(PnSpriteSimpleLitPropNames.USE_OUTLINE_PROP_NAME, _Prop, false);
+            outlineColor = FindProperty(PnSpriteSimpleLitPropNames.OUTLINE_COLOR_PROP_NAME, _Prop, false);
+            hideOutlineColor = FindProperty(PnSpriteSimpleLitPropNames.HIDE_OUTLINE_COLOR_PROP_NAME, _Prop, false);
 
             // Stencil
-            hideColor = FindProperty("_HideColor", _Prop, false);
-            stencilNum = FindProperty("_StencilNum", _Prop, false);
-            stencilCompMode = FindProperty("_StencilCompMode", _Prop, false);
-            stencilOp = FindProperty("_StencilOp", _Prop, false);
-
-            // Billboard
-            useBillboard = FindProperty("_UseBillboard", _Prop, false);
+            hideColor = FindProperty(PnSpriteSimpleLitPropNames.HIDE_COLOR_PROP_NAME, _Prop, false);
+            stencilNum = FindProperty(PnSpriteSimpleLitPropNames.STENCIL_NUM_PROP_NAME, _Prop, false);
+            stencilCompMode = FindProperty(PnSpriteSimpleLitPropNames.STENCIL_COMP_MODE_PROP_NAME, _Prop, false);
+            stencilOp = FindProperty(PnSpriteSimpleLitPropNames.STENCIL_OP_PROP_NAME, _Prop, false);
         }
     }
 

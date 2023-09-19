@@ -18,7 +18,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
         [Enum(UnityEngine.Rendering.StencilOp)]_StencilOp("Stencil Operation", int) = 0
 
         // Billboard
-        _UseBillboard("Use Billboard", int) = 1
+        _UseBillboard("Use Billboard", int) = 0
         
         // Legacy properties. They're here so that materials using this shader can gracefully fallback to the legacy sprite shader.
         [HideInInspector] _Color("Tint", Color) = (1,1,1,1)

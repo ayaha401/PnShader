@@ -1,2 +1,4 @@
-Version1.5.0
-・SpriteSimpleLitでビルボードを作成
+Version1.5.1
+＝SpriteSimpleLit＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+・ビルボードの初期値を修正
+・プロパティ名に関する定数を作成
