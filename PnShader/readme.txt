@@ -1,2 +1,2 @@
-Version1.4.0
-・SpriteSimpleLitで隠れた時用アウトラインを扱うことができるようになった
+Version1.5.0
+・SpriteSimpleLitでビルボードを作成

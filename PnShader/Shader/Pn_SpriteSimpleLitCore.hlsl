@@ -15,6 +15,9 @@ uniform half4 _RendererColor;
 uniform int _UseOutline;
 uniform float4 _OutlineColor;
 
+// Billboard
+uniform int _UseBillboard;
+
 struct Attributes
 {
     float3 positionOS   : POSITION;

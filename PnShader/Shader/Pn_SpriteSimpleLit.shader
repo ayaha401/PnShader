@@ -17,6 +17,9 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
         [Enum(UnityEngine.Rendering.CompareFunction)]_StencilCompMode("Stencil CompMode", int) = 0
         [Enum(UnityEngine.Rendering.StencilOp)]_StencilOp("Stencil Operation", int) = 0
 
+        // Billboard
+        _UseBillboard("Use Billboard", int) = 1
+        
         // Legacy properties. They're here so that materials using this shader can gracefully fallback to the legacy sprite shader.
         [HideInInspector] _Color("Tint", Color) = (1,1,1,1)
         [HideInInspector] PixelSnap("Pixel snap", Float) = 0
@@ -58,6 +61,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging2D.hlsl"
             #endif
             #include "Assets/AyahaShader/PnShader/Shader/Pn_SpriteSimpleLitCore.hlsl"
+            #include "Assets/AyahaShader/PnShader/Shader/Pn_SpriteFunction.hlsl"
 
             Varyings UnlitVertex(Attributes v)
             {
@@ -65,10 +69,12 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-                o.positionCS = TransformObjectToHClip(v.positionOS);
+                o.positionCS = billboard(_UseBillboard, v.positionOS);
+
                 #if defined(DEBUG_DISPLAY)
                 o.positionWS = TransformObjectToWorld(v.positionOS);
                 #endif
+                
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.color = v.color * _Color * _RendererColor;
                 return o;
@@ -128,19 +134,23 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging2D.hlsl"
             #endif
             #include "Assets/AyahaShader/PnShader/Shader/Pn_SpriteSimpleLitCore.hlsl"
+            #include "Assets/AyahaShader/PnShader/Shader/Pn_SpriteFunction.hlsl"
 
-            Varyings UnlitVertex(Attributes attributes)
+            Varyings UnlitVertex(Attributes v)
             {
                 Varyings o = (Varyings)0;
-                UNITY_SETUP_INSTANCE_ID(attributes);
+                UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
-
-                o.positionCS = TransformObjectToHClip(attributes.positionOS);
+                
+                // Billboard
+                o.positionCS = billboard(_UseBillboard, v.positionOS);
+                
                 #if defined(DEBUG_DISPLAY)
-                o.positionWS = TransformObjectToWorld(attributes.positionOS);
+                o.positionWS = TransformObjectToWorld(v.positionOS);
                 #endif
-                o.uv = TRANSFORM_TEX(attributes.uv, _MainTex);
-                o.color = attributes.color * _Color * _RendererColor;
+                
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.color = v.color * _Color * _RendererColor;
                 return o;
             }
 
@@ -202,6 +212,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #pragma vertex UnlitVertex
             #pragma fragment UnlitFragment
+            #include "Assets/AyahaShader/PnShader/Shader/Pn_SpriteFunction.hlsl"
 
             struct Attributes
             {
@@ -230,16 +241,21 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
             // HideOutline
             uniform int _UseOutline;
             uniform float4 _HideOutlineColor;
+            
+            // Billboard
+            uniform int _UseBillboard;
 
-            Varyings UnlitVertex(Attributes attributes)
+            Varyings UnlitVertex(Attributes v)
             {
                 Varyings o = (Varyings)0;
-                UNITY_SETUP_INSTANCE_ID(attributes);
+                UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-                o.positionCS = TransformObjectToHClip(attributes.positionOS);
-                o.uv = TRANSFORM_TEX(attributes.uv, _MainTex);
-                o.color = attributes.color;
+                // Billboard
+                o.positionCS = billboard(_UseBillboard, v.positionOS);
+
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.color = v.color;
                 return o;
             }
 

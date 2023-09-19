@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using System;
 
 namespace AyahaShader.Pn
 {
@@ -19,6 +20,9 @@ namespace AyahaShader.Pn
         private MaterialProperty stencilNum;
         private MaterialProperty stencilCompMode;
         private MaterialProperty stencilOp;
+
+        // Billboard
+        private MaterialProperty useBillboard;
 
         private bool isBaseUi = false;
         private bool useOutlineFoldout = false;
@@ -67,8 +71,15 @@ namespace AyahaShader.Pn
                     material.SetInt("_UseOutline", 0);
                 }
             }
-            
-            PnCustomUI.GUIPartition();
+
+            PnCustomUI.Title("Billboard");
+            using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+            {
+                bool useBillboardToggle = material.GetInt("_UseBillboard") == 1 ? true : false;
+                useBillboardToggle = GUILayout.Toggle(useBillboardToggle, new GUIContent("Use Billboard"));
+                material.SetInt("_UseBillboard", Convert.ToInt32(useBillboardToggle));
+            }
+
 
             // アドバイス設定
             advancedSettingsFoldout = PnCustomUI.Foldout("Advanced Settings", advancedSettingsFoldout);
@@ -101,6 +112,9 @@ namespace AyahaShader.Pn
             stencilNum = FindProperty("_StencilNum", _Prop, false);
             stencilCompMode = FindProperty("_StencilCompMode", _Prop, false);
             stencilOp = FindProperty("_StencilOp", _Prop, false);
+
+            // Billboard
+            useBillboard = FindProperty("_UseBillboard", _Prop, false);
         }
     }
 
