@@ -34,6 +34,12 @@ Shader "Universal Render Pipeline/Pn/SimpleLit"
         // Editmode props
         _QueueOffset("Queue offset", Float) = 0.0
 
+        // Dither
+        _UseDither("Use Dither", int) = 0
+        _FadeStart("Fade Start", float) = 5.0
+        _FadeEnd("Fade End", float) = 10.0
+        _DitherSize("Dither Size", float) = 1.0
+
         // Stencil
         _StencilNum("Stencil Number", int) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)]_StencilCompMode("Stencil CompMode", int) = 0

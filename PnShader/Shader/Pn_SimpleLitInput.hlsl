@@ -3,6 +3,7 @@
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
+#include "Assets/AyahaShader/PnShader/Shader/Pn_SimpleLitFunction.hlsl"
 
 CBUFFER_START(UnityPerMaterial)
     float4 _BaseMap_ST;
@@ -11,10 +12,12 @@ CBUFFER_START(UnityPerMaterial)
     half4 _EmissionColor;
     half _Cutoff;
     half _Surface;
-    // stencil これいらないかも。今後使わないかもだから
-    int _StencilNum;
-    int _StencilCompMode;
-    int _StencilOp;
+
+    // Dither
+    uniform int _UseDither;
+    uniform float _FadeStart;
+    uniform float _FadeEnd;
+    uniform float _DitherSize;
 CBUFFER_END
 
 #ifdef UNITY_DOTS_INSTANCING_ENABLED

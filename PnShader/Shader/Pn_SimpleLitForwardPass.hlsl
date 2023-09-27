@@ -45,6 +45,9 @@ struct Varyings
 #endif
 
     float4 positionCS : SV_POSITION;
+    float4 screenPos : TEXCOORD9;
+    float2 NDCPosition : TEXCOORD10;
+
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
 };
@@ -158,6 +161,8 @@ Varyings LitPassVertexSimple(Attributes input)
         output.shadowCoord = GetShadowCoord(vertexInput);
 #endif
 
+
+    output.screenPos = ComputeScreenPos(output.positionCS);
     return output;
 }
 
@@ -178,10 +183,28 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     ApplyDecalToSurfaceData(input.positionCS, surfaceData, inputData);
 #endif
 
+#if UNITY_UV_STARTS_AT_TOP
+    float2 PixelPosition = float2(input.positionCS.x, (_ProjectionParams.x < 0) ? (_ScreenParams.y - input.positionCS.y) : input.positionCS.y);
+#else
+    float2 PixelPosition = float2(input.positionCS.x, (_ProjectionParams.x > 0) ? (_ScreenParams.y - input.positionCS.y) : input.positionCS.y);
+#endif
+    input.NDCPosition = PixelPosition.xy / _ScreenParams.xy;
+    input.NDCPosition.y = 1.0f - input.NDCPosition.y;
+
     half4 color = UniversalFragmentBlinnPhong(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     color.a = OutputAlpha(color.a, _Surface);
 
+    // Dither
+    if(_UseDither)
+    {
+        float dist = distance(_WorldSpaceCameraPos, input.positionWS);
+        dist = smoothstep(_FadeStart, _FadeEnd, dist);
+        dist = lerp(0.0, 1.0, dist);
+        float dither = Dither(dist, (float4(input.NDCPosition, 0.0, 0.0) / _DitherSize));
+        clip(dither - _Cutoff);
+    }
+    
     return color;
 }
 

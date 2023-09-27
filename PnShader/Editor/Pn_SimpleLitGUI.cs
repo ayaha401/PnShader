@@ -11,17 +11,31 @@ namespace AyahaShader.Pn
     {
         // Properties
         private SimpleLitGUI.SimpleLitProperties shadingModelProperties;
-        
+
+        // Dither
+        private MaterialProperty useDither;
+        private MaterialProperty fadeStart;
+        private MaterialProperty fadeEnd;
+        private MaterialProperty ditherSize;
+
         // Stensil
         private MaterialProperty stencilNum;
         private MaterialProperty stencilCompMode;
         private MaterialProperty stencilOp;
+
+        private bool useDitherFoldout = false;
 
         // collect properties from the material properties
         public override void FindProperties(MaterialProperty[] properties)
         {
             base.FindProperties(properties);
             shadingModelProperties = new SimpleLitGUI.SimpleLitProperties(properties);
+
+            // Dither
+            useDither = FindProperty("_UseDither", properties, false);
+            fadeStart = FindProperty("_FadeStart", properties, false);
+            fadeEnd = FindProperty("_FadeEnd", properties, false);
+            ditherSize = FindProperty("_DitherSize", properties, false);
 
             // Stensil
             stencilNum = FindProperty("_StencilNum", properties, false);
@@ -62,9 +76,31 @@ namespace AyahaShader.Pn
             base.DrawAdvancedOptions(material);
 
             // Stensil
+            PnCustomUI.Title("Stensil");
             materialEditor.ShaderProperty(stencilNum, new GUIContent("Stencil Number"));
             materialEditor.ShaderProperty(stencilCompMode, new GUIContent("Stencil CompMode"));
             materialEditor.ShaderProperty(stencilOp, new GUIContent("Stencil Operation"));
+
+            // Dither
+            if(useDither != null)
+            {
+                useDitherFoldout = material.GetInt("_UseDither") == 1 ? true : false;
+                useDitherFoldout = PnCustomUI.ToggleFoldout("Dither", useDitherFoldout);
+                if(useDitherFoldout)
+                {
+                    material.SetInt("_UseDither", 1);
+                    using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+                    {
+                        materialEditor.ShaderProperty(fadeStart, new GUIContent("Fade Start"));
+                        materialEditor.ShaderProperty(fadeEnd, new GUIContent("Fade End"));
+                        materialEditor.ShaderProperty(ditherSize, new GUIContent("Dither Size"));
+                    }
+                }
+                else
+                {
+                    material.SetInt("_UseDither", 0);
+                }
+            }
         }
 
         public override void AssignNewShaderToMaterial(Material material, Shader oldShader, Shader newShader)
