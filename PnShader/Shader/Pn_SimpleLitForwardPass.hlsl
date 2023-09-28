@@ -202,7 +202,7 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
         dist = smoothstep(_FadeStart, _FadeEnd, dist);
         dist = lerp(0.0, 1.0, dist);
         float dither = Dither(dist, (float4(input.NDCPosition, 0.0, 0.0) / _DitherSize));
-        clip(dither - _Cutoff);
+        clip(dist != 1.0 ? dither - _Cutoff : 1.0);
     }
     
     return color;
