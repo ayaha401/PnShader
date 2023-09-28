@@ -12,11 +12,17 @@ float4 billboard(int enable, float3 positionOS)
     }
     else
     {
-        // AllAxis Billboard
-        float3 viewPos = TransformWorldToView(TransformObjectToWorld(float3(0,0,0)));
-        float3 scaleRotatePos = mul((float3x3)unity_ObjectToWorld, positionOS);
-        viewPos += float3(scaleRotatePos.xy, -scaleRotatePos.z);
-        return mul(UNITY_MATRIX_P, float4(viewPos, 1));
+        // Y Axis Billboard
+        float3 viewPos = TransformWorldToView(TransformObjectToWorld((float3)0.0));
+        float3 scaleRotatePos = mul((float3x3)unity_ObjectToWorld, positionOS);                
+        float3x3 ViewRotateY = float3x3(
+            1.0, UNITY_MATRIX_V._m01, 0.0,
+            0.0, UNITY_MATRIX_V._m11, 0.0,
+            0.0, UNITY_MATRIX_V._m21, -1.0
+        );
+        viewPos += mul(ViewRotateY, scaleRotatePos);
+        
+        return mul(UNITY_MATRIX_P, float4(viewPos, 1.0));
     }
 }
 
