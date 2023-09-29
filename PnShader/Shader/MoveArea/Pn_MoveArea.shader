@@ -1,0 +1,141 @@
+Shader "Universal Render Pipeline/Pn/MoveArea"
+{
+    Properties
+    {
+        _Radius("Radius", Range(0.0, 1.0)) = 0.5
+        // _LineWidth("Line Width", Range(0.0, 1.0)) = 0.03
+        // _ObjCrossLineWidth("ObjCrossLine Width", Range(0.0, 1.0)) = 0.4
+        // _OutlineColor("Outline Color", Color) = (0, 0.25, 0.75, 1.0)
+        _MoveableColor("Moveable Color", Color) = (0, 0.6, 0.75, 1.0)
+
+        // Stencil
+        _StencilNum("Stencil Number", int) = 0
+        [Enum(UnityEngine.Rendering.CompareFunction)]_StencilCompMode("Stencil CompMode", int) = 0
+        [Enum(UnityEngine.Rendering.StencilOp)]_StencilOp("Stencil Operation", int) = 0
+    }
+    SubShader
+    {
+        Tags
+        {
+            "RenderType" = "Transparent"
+            "Queue" = "Transparent"
+            "RenderPipeline" = "UniversalPipeline"
+        }
+
+        Blend SrcAlpha OneMinusSrcAlpha
+        ZWrite Off
+
+        Stencil
+        {
+            Ref[_StencilNum]
+            Comp[_StencilCompMode]
+            Pass[_StencilOp]
+        }
+
+        Pass
+        {
+            Name "Universal2D"
+            Tags
+            {
+                "LightMode" = "UniversalForward"
+            }
+
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/Shaders/SimpleLitInput.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "Assets/AyahaShader/PnShader/Shader/Pn_Macro.hlsl"
+            #include "Assets/AyahaShader/PnShader/Shader/Pn_SDF.hlsl"
+
+            struct Attributes
+            {
+                float4 positionOS : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct Varyings
+            {
+                float4 positionHCS : SV_POSITION;
+                float2 uv : TEXCOORD0;
+                float4 screenPos : TEXCOORD1;
+                float3 positionVS : TEXCOORD2;
+                float3 positionWS : TEXCOORD3;
+            };
+            
+            CBUFFER_START(UnityPerMaterial)
+            uniform float _Radius;
+            uniform float _LineWidth;
+            uniform float _ObjCrossLineWidth;
+            uniform float3 _OutlineColor;
+            uniform float4 _MoveableColor;
+            CBUFFER_END
+
+            Varyings vert(Attributes v)
+            {
+                Varyings o = (Varyings)0;
+
+                VertexPositionInputs vertexInput = GetVertexPositionInputs(v.positionOS.xyz);
+                o.positionHCS = vertexInput.positionCS;
+                o.positionVS = vertexInput.positionVS;
+                o.screenPos = vertexInput.positionNDC;
+                o.positionWS = vertexInput.positionWS;
+                o.uv = v.uv;
+                return o;
+            }
+
+            float4 frag(Varyings i) : SV_Target
+            {
+                // Calc Circle===============================================
+                float2 sdfuv = i.uv * 2.0 - 1.0;
+                float d0 = sdCircle(sdfuv, _Radius);
+                float d1 = sdCircle(sdfuv, saturate(_Radius - (_Radius * _LineWidth)));
+                // float d1 = sdCircle(sdfuv, saturate(_Radius - _LineWidth));
+                // Calc Circle===============================================
+
+                
+
+                // Depth
+                float2 screenUV = i.screenPos.xy / i.screenPos.w;
+                float depth = _CameraDepthTexture.Sample(sampler_CameraDepthTexture, screenUV).r;
+                depth = LinearEyeDepth(depth, _ZBufferParams);
+                float screenDepth = depth - i.screenPos.w;
+                float fragmentEyeDepth = -i.positionVS.z;
+                float rawDepth = SampleSceneDepth(screenUV);
+                float orthoLinearDepth = _ProjectionParams.x > 0.0 ? rawDepth : 1.0 - rawDepth;
+                float sceneEyeDepth = lerp(_ProjectionParams.y, _ProjectionParams.z, orthoLinearDepth);
+                
+                // depthDifference
+                float depthDifference = 1.0 - saturate((sceneEyeDepth - fragmentEyeDepth) * 1.);
+                float objCrossOutline = 1.0 - step(depthDifference, 1.0 - _ObjCrossLineWidth);
+                float a = (sceneEyeDepth - fragmentEyeDepth) / 20.;
+                // a = 1.-a;
+
+                // mask
+                float outlineMask = opSub(d1, d0);
+                outlineMask = step(outlineMask, PN_EPS) + objCrossOutline;
+                outlineMask = saturate(outlineMask);
+                float moveableAreaMask = d1;
+                moveableAreaMask = step(moveableAreaMask, PN_EPS);
+
+                // lastColor
+                // float4 lastCol = (float4)1;
+                // lastCol.rgb = (_OutlineColor * outlineMask) + ((1.0 - outlineMask) * (_MoveableColor * moveableAreaMask));
+                // lastCol.a = step(d0, PN_EPS);
+
+                
+                // return lastCol;
+                
+                float sdf = step(d0, PN_EPS);
+                float4 col = (float4)1.0;
+                col.rgb = sdf.xxx * _MoveableColor;
+                col.a = a.x >= 1.0 ? 0.0 : _MoveableColor.a;
+                return float4(col.rgb, col.a * sdf);
+                // return float4(a.xxx, 1.);
+            }
+            ENDHLSL
+        }
+    }
+}

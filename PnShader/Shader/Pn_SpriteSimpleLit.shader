@@ -33,7 +33,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
     {
         Tags 
         {
-            "Queue" = "Transparent" 
+            "Queue" = "Transparent"
             "RenderType" = "Transparent" 
             "RenderPipeline" = "UniversalPipeline" 
         }

@@ -81,6 +81,7 @@ Shader "Universal Render Pipeline/Pn/SimpleLit"
             Blend[_SrcBlend][_DstBlend]
             ZWrite[_ZWrite]
             Cull[_Cull]
+ZWrite On
 
             Stencil
             {
