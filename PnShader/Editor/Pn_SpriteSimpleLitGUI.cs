@@ -8,12 +8,13 @@ namespace AyahaShader.Pn
     {
         // Main
         private MaterialProperty mainTex;
-        private MaterialProperty subTex;
 
         // Outline
         private MaterialProperty useOutline;
         private MaterialProperty outlineColor;
         private MaterialProperty hideOutlineColor;
+        private MaterialProperty width;
+        private MaterialProperty widthMult;
 
         // Stencil
         private MaterialProperty hideColor;
@@ -46,7 +47,6 @@ namespace AyahaShader.Pn
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
                 materialEditor.TextureProperty(mainTex, "MainTex");
-                materialEditor.TextureProperty(subTex, "SubTex");
                 materialEditor.ColorProperty(hideColor, "HideColor");
             }
 
@@ -61,6 +61,8 @@ namespace AyahaShader.Pn
                     {
                         materialEditor.ShaderProperty(outlineColor, new GUIContent("OutlineColor"));
                         materialEditor.ShaderProperty(hideOutlineColor, new GUIContent("HideOutlineColor"));
+                        materialEditor.ShaderProperty(width, new GUIContent("Width"));
+                        materialEditor.ShaderProperty(widthMult, new GUIContent("Width Multiply"));
                     }
                 }
                 else
@@ -101,12 +103,13 @@ namespace AyahaShader.Pn
         {
             // Main
             mainTex = FindProperty(PnSpriteSimpleLitPropNames.MAIN_TEX_PROP_NAME, _Prop, false);
-            subTex = FindProperty(PnSpriteSimpleLitPropNames.SUB_TEX_PROP_NAME, _Prop, false);
 
             // Outline
             useOutline = FindProperty(PnSpriteSimpleLitPropNames.USE_OUTLINE_PROP_NAME, _Prop, false);
             outlineColor = FindProperty(PnSpriteSimpleLitPropNames.OUTLINE_COLOR_PROP_NAME, _Prop, false);
             hideOutlineColor = FindProperty(PnSpriteSimpleLitPropNames.HIDE_OUTLINE_COLOR_PROP_NAME, _Prop, false);
+            width = FindProperty("_Width", _Prop, false);
+            widthMult = FindProperty("_WidthMult", _Prop, false);
 
             // Stencil
             hideColor = FindProperty(PnSpriteSimpleLitPropNames.HIDE_COLOR_PROP_NAME, _Prop, false);

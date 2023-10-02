@@ -4,7 +4,6 @@ namespace AyahaShader.Pn
     {
         // Main
         public const string MAIN_TEX_PROP_NAME = "_MainTex";
-        public const string SUB_TEX_PROP_NAME = "_SubTex";
 
         // Outline
         public const string USE_OUTLINE_PROP_NAME = "_UseOutline";

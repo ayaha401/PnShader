@@ -4,12 +4,13 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
     {
         // Main
         _MainTex("Sprite Texture", 2D) = "white" {}
-        _SubTex("Sub Texture", 2D) = "black" {}
 
         // Outline
         _UseOutline("Use Outline", int) = 0
         _OutlineColor("Outline Color", Color) = (1,1,1,1)
         _HideOutlineColor("Hide Outline Color", Color) = (1,1,1,1)
+        _Width("Width", float) = 0.5
+        _WidthMult("Width Mult", float) = 10
 
         // Stencil
         _HideColor("Hide Color", Color) = (1,1,1,1)
@@ -83,16 +84,26 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
             half4 UnlitFragment(Varyings i) : SV_Target
             {
                 // Main
-                float4 mainTex = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
-                
+                float4 mainTex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+
                 // Outline
-                const float outline = SAMPLE_TEXTURE2D(_SubTex, sampler_MainTex, i.uv).r;
-                float3 outlineCol = (outline.xxx * _OutlineColor) * _UseOutline;
-                float outlineAlpha = (outline * _OutlineColor.a) * _UseOutline;
+                float4 outlineCol = float4(0, 0, 0, 0);
+                if(_UseOutline)
+                {
+                    float width = _Width / _WidthMult;
+                    float leftShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x + width, i.uv.y)).a;
+                    float rightShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x - width, i.uv.y)).a;
+                    float upShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y + width)).a;
+                    float downShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y - width)).a;
+                    
+                    float outline = saturate((leftShift - mainTex.a) + (rightShift - mainTex.a) + (upShift - mainTex.a) + (downShift - mainTex.a));
+                    outlineCol.rgb = outline.xxx * _OutlineColor.rgb;
+                    outlineCol.a = outline.x * _OutlineColor.a * i.color.a;
+                }
 
                 // LastColor
-                float4 lastCol = float4(mainTex.rgb + outlineCol, mainTex.a * i.color.a + outlineAlpha);
-
+                float4 lastCol = (mainTex + outlineCol) * i.color;
+                
                 #if defined(DEBUG_DISPLAY)
                 SurfaceData2D surfaceData;
                 InputData2D inputData;
@@ -157,15 +168,25 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
             float4 UnlitFragment(Varyings i) : SV_Target
             {
                 // Main
-                float4 mainTex = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+                float4 mainTex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
 
                 // Outline
-                float outline = SAMPLE_TEXTURE2D(_SubTex, sampler_MainTex, i.uv).r;
-                float3 outlineCol = (outline.xxx * _OutlineColor) * _UseOutline;
-                float outlineAlpha = (outline * _OutlineColor.a) * _UseOutline;
+                float4 outlineCol = float4(0, 0, 0, 0);
+                if(_UseOutline)
+                {
+                    float width = max(_Width, 0.0) / _WidthMult;
+                    float leftShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x + width, i.uv.y)).a;
+                    float rightShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x - width, i.uv.y)).a;
+                    float upShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y + width)).a;
+                    float downShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y - width)).a;
+                    
+                    float outline = saturate((leftShift - mainTex.a) + (rightShift - mainTex.a) + (upShift - mainTex.a) + (downShift - mainTex.a));
+                    outlineCol.rgb = outline.xxx * _OutlineColor.rgb;
+                    outlineCol.a = outline.x * _OutlineColor.a * i.color.a;
+                }
 
                 // LastColor
-                float4 lastCol = float4(mainTex.rgb + outlineCol, mainTex.a * i.color.a + outlineAlpha);
+                float4 lastCol = (mainTex + outlineCol) * i.color;
 
                 #if defined(DEBUG_DISPLAY)
                 SurfaceData2D surfaceData;
@@ -232,7 +253,6 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
-            TEXTURE2D(_SubTex);
 
             // Main
             uniform float4 _MainTex_ST;
@@ -241,6 +261,8 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
             // HideOutline
             uniform int _UseOutline;
             uniform float4 _HideOutlineColor;
+            uniform float _Width;
+            uniform float _WidthMult;
             
             // Billboard
             uniform int _UseBillboard;
@@ -262,17 +284,26 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
             float4 UnlitFragment(Varyings i) : SV_Target
             {
                 // Main
-                float4 mainTex = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+                float4 mainTex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
                 
-                // HideOutline
-                const float hideOutline = SAMPLE_TEXTURE2D(_SubTex, sampler_MainTex, i.uv).r;
-                float3 hideOutlineCol = (hideOutline.xxx * _HideOutlineColor) * _UseOutline;
-                float hideOutlineAlpha = (hideOutline * _HideOutlineColor.a) * _UseOutline;
+                // Outline
+                float4 outlineCol = float4(0, 0, 0, 0);
+                if(_UseOutline)
+                {
+                    float width = _Width / _WidthMult;
+                    float leftShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x + width, i.uv.y)).a;
+                    float rightShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x - width, i.uv.y)).a;
+                    float upShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y + width)).a;
+                    float downShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y - width)).a;
+                    
+                    float outline = saturate((leftShift - mainTex.a) + (rightShift - mainTex.a) + (upShift - mainTex.a) + (downShift - mainTex.a));
+                    outlineCol.rgb = outline.xxx * _HideOutlineColor.rgb;
+                    outlineCol.a = outline.x * _HideOutlineColor.a * i.color.a;
+                }
 
                 // LastColor
-                float4 lastColor = (float4)1.0;
-                lastColor = float4(_HideColor.rgb + hideOutlineCol, mainTex.a * i.color.a + hideOutlineAlpha);
-                return lastColor;
+                float4 lastCol = float4(_HideColor.rgb + outlineCol.rgb, mainTex.a * i.color.a + outlineCol.a);
+                return lastCol;
             }
 
             ENDHLSL

@@ -4,7 +4,6 @@
 // Texture
 TEXTURE2D(_MainTex);
 SAMPLER(sampler_MainTex);
-TEXTURE2D(_SubTex);
 
 // Main
 uniform half4 _MainTex_ST;
@@ -14,6 +13,8 @@ uniform half4 _RendererColor;
 // Outline
 uniform int _UseOutline;
 uniform float4 _OutlineColor;
+uniform float _Width;
+uniform float _WidthMult;
 
 // Billboard
 uniform int _UseBillboard;
