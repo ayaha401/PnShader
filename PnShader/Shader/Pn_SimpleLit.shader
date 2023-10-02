@@ -28,7 +28,8 @@ Shader "Universal Render Pipeline/Pn/SimpleLit"
         [ToggleUI] _AlphaClip("__clip", Float) = 0.0
         [HideInInspector] _SrcBlend("__src", Float) = 1.0
         [HideInInspector] _DstBlend("__dst", Float) = 0.0
-        [HideInInspector] _ZWrite("__zw", Float) = 1.0
+        _ZWrite("__zw", Float) = 1.0
+        _Pn_ZWrite("__zw", Float) = 1.0
 
         [ToggleUI] _ReceiveShadows("Receive Shadows", Float) = 1.0
         // Editmode props
@@ -79,9 +80,8 @@ Shader "Universal Render Pipeline/Pn/SimpleLit"
 
             // Use same blending / depth states as Standard shader
             Blend[_SrcBlend][_DstBlend]
-            ZWrite[_ZWrite]
+            ZWrite[_Pn_ZWrite]
             Cull[_Cull]
-ZWrite On
 
             Stencil
             {
@@ -191,7 +191,7 @@ ZWrite On
                 "LightMode" = "UniversalGBuffer"
             }
 
-            ZWrite[_ZWrite]
+            ZWrite[_Pn_ZWrite]
             ZTest LEqual
             Cull[_Cull]
 
@@ -390,8 +390,9 @@ ZWrite On
 
             // Use same blending / depth states as Standard shader
             Blend[_SrcBlend][_DstBlend]
-            ZWrite[_ZWrite]
+            ZWrite[_Pn_ZWrite]
             Cull[_Cull]
+            
 
             HLSLPROGRAM
             #pragma only_renderers gles gles3 glcore d3d11

@@ -67,9 +67,9 @@ Shader "Universal Render Pipeline/Pn/MoveArea"
             
             CBUFFER_START(UnityPerMaterial)
             uniform float _Radius;
-            uniform float _LineWidth;
-            uniform float _ObjCrossLineWidth;
-            uniform float3 _OutlineColor;
+            // uniform float _LineWidth;
+            // uniform float _ObjCrossLineWidth;
+            // uniform float3 _OutlineColor;
             uniform float4 _MoveableColor;
             CBUFFER_END
 
@@ -91,51 +91,34 @@ Shader "Universal Render Pipeline/Pn/MoveArea"
                 // Calc Circle===============================================
                 float2 sdfuv = i.uv * 2.0 - 1.0;
                 float d0 = sdCircle(sdfuv, _Radius);
-                float d1 = sdCircle(sdfuv, saturate(_Radius - (_Radius * _LineWidth)));
-                // float d1 = sdCircle(sdfuv, saturate(_Radius - _LineWidth));
+                // float d1 = sdCircle(sdfuv, saturate(_Radius - (_Radius * _LineWidth)));
+                // float d1 = sdCircle(sdfuv, saturate(_Radius - _LineWidth));      // 割合でアウトラインが変化しない方法のd1
                 // Calc Circle===============================================
 
-                
-
                 // Depth
-                float2 screenUV = i.screenPos.xy / i.screenPos.w;
-                float depth = _CameraDepthTexture.Sample(sampler_CameraDepthTexture, screenUV).r;
-                depth = LinearEyeDepth(depth, _ZBufferParams);
-                float screenDepth = depth - i.screenPos.w;
-                float fragmentEyeDepth = -i.positionVS.z;
-                float rawDepth = SampleSceneDepth(screenUV);
-                float orthoLinearDepth = _ProjectionParams.x > 0.0 ? rawDepth : 1.0 - rawDepth;
-                float sceneEyeDepth = lerp(_ProjectionParams.y, _ProjectionParams.z, orthoLinearDepth);
+                // float2 screenUV = i.screenPos.xy / i.screenPos.w;
+                // float depth = _CameraDepthTexture.Sample(sampler_CameraDepthTexture, screenUV).r;
+                // depth = LinearEyeDepth(depth, _ZBufferParams);
+                // float screenDepth = depth - i.screenPos.w;
+                // float fragmentEyeDepth = -i.positionVS.z;
+                // float rawDepth = SampleSceneDepth(screenUV);
+                // float orthoLinearDepth = _ProjectionParams.x > 0.0 ? rawDepth : 1.0 - rawDepth;
+                // float sceneEyeDepth = lerp(_ProjectionParams.y, _ProjectionParams.z, orthoLinearDepth);
                 
                 // depthDifference
-                float depthDifference = 1.0 - saturate((sceneEyeDepth - fragmentEyeDepth) * 1.);
-                float objCrossOutline = 1.0 - step(depthDifference, 1.0 - _ObjCrossLineWidth);
-                float a = (sceneEyeDepth - fragmentEyeDepth) / 20.;
-                // a = 1.-a;
-
-                // mask
-                float outlineMask = opSub(d1, d0);
-                outlineMask = step(outlineMask, PN_EPS) + objCrossOutline;
-                outlineMask = saturate(outlineMask);
-                float moveableAreaMask = d1;
-                moveableAreaMask = step(moveableAreaMask, PN_EPS);
-
-                // lastColor
-                // float4 lastCol = (float4)1;
-                // lastCol.rgb = (_OutlineColor * outlineMask) + ((1.0 - outlineMask) * (_MoveableColor * moveableAreaMask));
-                // lastCol.a = step(d0, PN_EPS);
-
-                
-                // return lastCol;
+                // float depthDifference = 1.0 - saturate((sceneEyeDepth - fragmentEyeDepth) * 1.);
+                // float objCrossOutline = 1.0 - step(depthDifference, 1.0 - _ObjCrossLineWidth);
+                // float diff = (sceneEyeDepth - fragmentEyeDepth) / 20.;
                 
                 float sdf = step(d0, PN_EPS);
                 float4 col = (float4)1.0;
                 col.rgb = sdf.xxx * _MoveableColor;
-                col.a = a.x >= 1.0 ? 0.0 : _MoveableColor.a;
-                return float4(col.rgb, col.a * sdf);
-                // return float4(a.xxx, 1.);
+                col.a = _MoveableColor.a;
+                
+                return float4(col.rgb, col.a * sdf);              
             }
             ENDHLSL
         }
     }
+    CustomEditor "AyahaShader.Pn.Pn_MoveAreaGUI"
 }

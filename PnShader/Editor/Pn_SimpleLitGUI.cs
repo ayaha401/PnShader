@@ -12,6 +12,9 @@ namespace AyahaShader.Pn
         // Properties
         private SimpleLitGUI.SimpleLitProperties shadingModelProperties;
 
+        // Advanced Options
+        private MaterialProperty zWrite;
+
         // Dither
         private MaterialProperty useDither;
         private MaterialProperty fadeStart;
@@ -30,6 +33,9 @@ namespace AyahaShader.Pn
         {
             base.FindProperties(properties);
             shadingModelProperties = new SimpleLitGUI.SimpleLitProperties(properties);
+
+            // Advanced Options
+            zWrite = FindProperty("_Pn_ZWrite", properties, false);
 
             // Dither
             useDither = FindProperty("_UseDither", properties, false);
@@ -75,6 +81,13 @@ namespace AyahaShader.Pn
             SimpleLitGUI.Advanced(shadingModelProperties);
             base.DrawAdvancedOptions(material);
 
+            // Advanced Options
+            if(zWrite != null)
+            {
+                materialEditor.ShaderProperty(zWrite, new GUIContent("ZWrite"));
+            }
+            //Debug.Log(zwriteProp)
+
             // Stensil
             PnCustomUI.Title("Stensil");
             materialEditor.ShaderProperty(stencilNum, new GUIContent("Stencil Number"));
@@ -101,6 +114,10 @@ namespace AyahaShader.Pn
                     material.SetInt("_UseDither", 0);
                 }
             }
+
+            // RenderQueue
+            PnCustomUI.Title("RenderQueue");
+            materialEditor.RenderQueueField();
         }
 
         public override void AssignNewShaderToMaterial(Material material, Shader oldShader, Shader newShader)

@@ -78,7 +78,7 @@ namespace AyahaShader.Pn
             }
 
 
-            // アドバイス設定
+            // アドバンス設定
             advancedSettingsFoldout = PnCustomUI.Foldout("Advanced Settings", advancedSettingsFoldout);
             if (advancedSettingsFoldout)
             {
@@ -90,6 +90,10 @@ namespace AyahaShader.Pn
                     materialEditor.ShaderProperty(stencilCompMode, new GUIContent("Stencil CompMode"));
                     materialEditor.ShaderProperty(stencilOp, new GUIContent("Stencil Operation"));
                 }
+
+                // RenderQueue
+                PnCustomUI.Title("RenderQueue");
+                materialEditor.RenderQueueField();
             }
         }
 
