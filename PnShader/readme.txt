@@ -1,7 +1,7 @@
-Version1.7.2
+Version1.7.4
 
 ＝SpriteSimpleLit＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-・SpriteRendererのColorで設定された色がアウトラインには影響されないようになった
+・Passごとに書いていたVetexShaderとFragmentShaderを一か所にまとめた
 
 ＝SimpleLit＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 ・無し
@@ -13,4 +13,7 @@ Version1.7.2
 ・無し
 
 ＝ColorMask＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+・無し
+
+＝Editor関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 ・無し
