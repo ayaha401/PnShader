@@ -70,7 +70,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-                o.positionCS = billboard(_UseBillboard, v.positionOS);
+                o.positionCS = Billboard(_UseBillboard, v.positionOS);
 
                 #if defined(DEBUG_DISPLAY)
                 o.positionWS = TransformObjectToWorld(v.positionOS);
@@ -90,19 +90,15 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 float4 outlineCol = float4(0, 0, 0, 0);
                 if(_UseOutline)
                 {
-                    float width = _Width / _WidthMult;
-                    float leftShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x + width, i.uv.y)).a;
-                    float rightShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x - width, i.uv.y)).a;
-                    float upShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y + width)).a;
-                    float downShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y - width)).a;
-                    
-                    float outline = saturate((leftShift - mainTex.a) + (rightShift - mainTex.a) + (upShift - mainTex.a) + (downShift - mainTex.a));
+                    float width = max(_Width, 0.0) / _WidthMult;
+                    float outline = Outline(_MainTex, sampler_MainTex, i.uv, mainTex.a, width);
                     outlineCol.rgb = outline.xxx * _OutlineColor.rgb;
                     outlineCol.a = outline.x * _OutlineColor.a * i.color.a;
                 }
 
                 // LastColor
-                float4 lastCol = (mainTex + outlineCol) * i.color;
+                float alpha = (mainTex.a * i.color.a) + outlineCol.a;
+                float3 lastColor = (mainTex.rgb * i.color.rgb) + outlineCol;
                 
                 #if defined(DEBUG_DISPLAY)
                 SurfaceData2D surfaceData;
@@ -119,7 +115,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 }
                 #endif
 
-                return lastCol;
+                return float4(lastColor, alpha);;
             }
             ENDHLSL
         }
@@ -154,7 +150,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
                 
                 // Billboard
-                o.positionCS = billboard(_UseBillboard, v.positionOS);
+                o.positionCS = Billboard(_UseBillboard, v.positionOS);
                 
                 #if defined(DEBUG_DISPLAY)
                 o.positionWS = TransformObjectToWorld(v.positionOS);
@@ -173,20 +169,16 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 // Outline
                 float4 outlineCol = float4(0, 0, 0, 0);
                 if(_UseOutline)
-                {
+                {                    
                     float width = max(_Width, 0.0) / _WidthMult;
-                    float leftShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x + width, i.uv.y)).a;
-                    float rightShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x - width, i.uv.y)).a;
-                    float upShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y + width)).a;
-                    float downShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y - width)).a;
-                    
-                    float outline = saturate((leftShift - mainTex.a) + (rightShift - mainTex.a) + (upShift - mainTex.a) + (downShift - mainTex.a));
+                    float outline = Outline(_MainTex, sampler_MainTex, i.uv, mainTex.a, width);
                     outlineCol.rgb = outline.xxx * _OutlineColor.rgb;
                     outlineCol.a = outline.x * _OutlineColor.a * i.color.a;
                 }
 
                 // LastColor
-                float4 lastCol = (mainTex + outlineCol) * i.color;
+                float alpha = (mainTex.a * i.color.a) + outlineCol.a;
+                float3 lastColor = (mainTex.rgb * i.color.rgb) + outlineCol;
 
                 #if defined(DEBUG_DISPLAY)
                 SurfaceData2D surfaceData;
@@ -203,7 +195,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 }
                 #endif
 
-                return lastCol;
+                return float4(lastColor, alpha);
             }
             ENDHLSL
         }
@@ -274,7 +266,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
                 // Billboard
-                o.positionCS = billboard(_UseBillboard, v.positionOS);
+                o.positionCS = Billboard(_UseBillboard, v.positionOS);
 
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.color = v.color;
@@ -290,13 +282,8 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 float4 outlineCol = float4(0, 0, 0, 0);
                 if(_UseOutline)
                 {
-                    float width = _Width / _WidthMult;
-                    float leftShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x + width, i.uv.y)).a;
-                    float rightShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x - width, i.uv.y)).a;
-                    float upShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y + width)).a;
-                    float downShift = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y - width)).a;
-                    
-                    float outline = saturate((leftShift - mainTex.a) + (rightShift - mainTex.a) + (upShift - mainTex.a) + (downShift - mainTex.a));
+                    float width = max(_Width, 0.0) / _WidthMult;
+                    float outline = Outline(_MainTex, sampler_MainTex, i.uv, mainTex.a, width);
                     outlineCol.rgb = outline.xxx * _HideOutlineColor.rgb;
                     outlineCol.a = outline.x * _HideOutlineColor.a * i.color.a;
                 }
