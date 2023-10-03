@@ -8,6 +8,9 @@ namespace AyahaShader.Pn
     {
         // Main
         private MaterialProperty mainTex;
+        private MaterialProperty lightMaxDistAtten;
+        private MaterialProperty pixelLightPower;
+        private MaterialProperty directionalLightPower;
 
         // Outline
         private MaterialProperty useOutline;
@@ -48,6 +51,9 @@ namespace AyahaShader.Pn
             {
                 materialEditor.TextureProperty(mainTex, "MainTex");
                 materialEditor.ColorProperty(hideColor, "HideColor");
+                materialEditor.ShaderProperty(lightMaxDistAtten, new GUIContent("Light Max Distance Attenuation"));
+                materialEditor.ShaderProperty(pixelLightPower, new GUIContent("PixelLight Power"));
+                materialEditor.ShaderProperty(directionalLightPower, new GUIContent("DirectionalLight Power"));
             }
 
             if(useOutline != null)
@@ -103,6 +109,9 @@ namespace AyahaShader.Pn
         {
             // Main
             mainTex = FindProperty(PnSpriteSimpleLitPropNames.MAIN_TEX_PROP_NAME, _Prop, false);
+            lightMaxDistAtten = FindProperty("_lightMaxDistAtten", _Prop, false);
+            pixelLightPower = FindProperty("_pixelLightPower", _Prop, false);
+            directionalLightPower = FindProperty("_directionalLightPower", _Prop, false);
 
             // Outline
             useOutline = FindProperty(PnSpriteSimpleLitPropNames.USE_OUTLINE_PROP_NAME, _Prop, false);

@@ -1,6 +1,8 @@
 #ifndef PN_SPRITE_SIMPLELIT_CORE_INCLUDED
 #define PN_SPRITE_SIMPLELIT_CORE_INCLUDED
 
+#include "Assets/AyahaShader/PnShader/Shader/Pn_Macro.hlsl"
+#include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteFunction.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
 // Texture
@@ -11,6 +13,9 @@ SAMPLER(sampler_MainTex);
 uniform half4 _MainTex_ST;
 uniform float4 _Color;
 uniform half4 _RendererColor;
+uniform float _lightMaxDistAtten;
+uniform float _pixelLightPower;
+uniform float _directionalLightPower;
 
 // Outline
 uniform int _UseOutline;
@@ -34,8 +39,9 @@ struct Varyings
     float4  positionCS  : SV_POSITION;
     half4   color       : COLOR;
     float2  uv          : TEXCOORD0;
-    #if defined(DEBUG_DISPLAY)
     float3  positionWS  : TEXCOORD2;
+    #if defined(DEBUG_DISPLAY)
+    
     #endif
     UNITY_VERTEX_OUTPUT_STEREO
 };

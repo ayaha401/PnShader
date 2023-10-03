@@ -8,15 +8,21 @@ Varyings UnlitVertex(Attributes v)
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
     
     // Billboard
+    float4x4 billboardMat = CalcBillboardMat(_UseBillboard);
+    o.positionWS = mul(billboardMat, float4(v.positionOS.xyz, 1.0));
+    
+    // Vertex
     o.positionCS = Billboard(_UseBillboard, v.positionOS);
     
-    #if defined(DEBUG_DISPLAY)
-    o.positionWS = TransformObjectToWorld(v.positionOS);
-    #endif
-    
+    // UV
     o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+
+    // Color
     o.color = v.color * _Color * _RendererColor;
-    o.color.rgb *= _MainLightColor.rgb;
+
+    // Lighting
+    o.color.rgb *= _MainLightColor.rgb * _directionalLightPower;
+
     return o;
 }
 
@@ -24,6 +30,16 @@ float4 UnlitFragment(Varyings i) : SV_Target
 {
     // Main
     float4 mainTex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+
+    // Lighting
+    float3 pixelLightColor = (float3)0.0;
+    uint pixelLightCount = GetAdditionalLightsCount();
+    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
+    {
+        Light light = GetAdditionalLight(lightIndex, i.positionWS);
+        float distanceAttenuation = lerp(0.0, PN_COMPARE_EPS(_lightMaxDistAtten), saturate(light.distanceAttenuation));
+        pixelLightColor = saturate(pixelLightColor + light.color.rgb * distanceAttenuation * _pixelLightPower);
+    }
 
     // Outline
     float4 outlineCol = float4(0, 0, 0, 0);
@@ -38,8 +54,9 @@ float4 UnlitFragment(Varyings i) : SV_Target
     // LastColor
     float alpha = (mainTex.a * i.color.a) + outlineCol.a;
     float3 lastColor = (mainTex.rgb * i.color.rgb) + outlineCol;
+    lastColor = saturate(lastColor + pixelLightColor);
 
-    #if defined(DEBUG_DISPLAY)
+#if defined(DEBUG_DISPLAY)
     SurfaceData2D surfaceData;
     InputData2D inputData;
     half4 debugColor = 0;
@@ -52,7 +69,7 @@ float4 UnlitFragment(Varyings i) : SV_Target
     {
         return debugColor;
     }
-    #endif
+#endif
 
     return float4(lastColor, alpha);
 }

@@ -26,6 +26,39 @@ float4 Billboard(int enable, float3 positionOS)
     }
 }
 
+// https://gam0022.net/blog/2021/12/23/unity-urp-billboard-shader/
+float4x4 CalcBillboardMat(int enable)
+{
+    if(enable == 0)
+    {
+        return float4x4(1.0, 0.0, 0.0, 0.0,
+                        0.0, 1.0, 0.0, 0.0,
+                        0.0, 0.0, 1.0, 0.0,
+                        0.0, 0.0, 0.0, 1.0);
+    }
+    else
+    {
+        float3 yup = float3(0.0, 1.0, 0.0);
+        float3 up = mul((float3x3)unity_ObjectToWorld, yup);
+        float3 worldPos = unity_ObjectToWorld._m03_m13_m23;
+        float3 toCamera = _WorldSpaceCameraPos - worldPos;
+        float3 right = normalize(cross(toCamera, up)) * length(unity_ObjectToWorld._m00_m10_m20);
+        float3 forward = normalize(cross(up, right)) * length(unity_ObjectToWorld._m02_m12_m22);
+
+        float4x4 mat = {
+                    1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1,
+                };
+                mat._m00_m10_m20 = right;
+                mat._m01_m11_m21 = up;
+                mat._m02_m12_m22 = forward;
+                mat._m03_m13_m23 = worldPos;
+        return mat;
+    }
+}
+
 // Outline
 // ex) float outline = Outline(_MainTex, sampler_MainTex, i.uv, mainTex.a, width);
 float Outline(Texture2D tex, SamplerState state,  float2 uv, float alpha, float outlineWidth)
