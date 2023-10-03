@@ -43,30 +43,30 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
         Cull Off
         ZWrite Off
 
-        Pass
-        {
-            Name "Universal2D"
-            Tags
-            {
-                "LightMode" = "Universal2D" 
-            }
+        // Pass
+        // {
+        //     Name "Universal2D"
+        //     Tags
+        //     {
+        //         "LightMode" = "Universal2D" 
+        //     }
 
-            HLSLPROGRAM
-            #pragma vertex UnlitVertex
-            #pragma fragment UnlitFragment
-            #pragma multi_compile _ DEBUG_DISPLAY
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #if defined(DEBUG_DISPLAY)
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/InputData2D.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/SurfaceData2D.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging2D.hlsl"
-            #endif
-            #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteSimpleLitCore.hlsl"
-            #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteFunction.hlsl"
-            #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteLitForwardPass.hlsl"
+        //     HLSLPROGRAM
+        //     #pragma vertex UnlitVertex
+        //     #pragma fragment UnlitFragment
+        //     #pragma multi_compile _ DEBUG_DISPLAY
+        //     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+        //     #if defined(DEBUG_DISPLAY)
+        //     #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/InputData2D.hlsl"
+        //     #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/SurfaceData2D.hlsl"
+        //     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging2D.hlsl"
+        //     #endif
+        //     #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteSimpleLitCore.hlsl"
+        //     #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteFunction.hlsl"
+        //     #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteLitForwardPass.hlsl"
 
-            ENDHLSL
-        }
+        //     ENDHLSL
+        // }
 
         Pass
         {

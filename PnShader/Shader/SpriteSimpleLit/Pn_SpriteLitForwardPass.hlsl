@@ -16,6 +16,7 @@ Varyings UnlitVertex(Attributes v)
     
     o.uv = TRANSFORM_TEX(v.uv, _MainTex);
     o.color = v.color * _Color * _RendererColor;
+    o.color.rgb *= _MainLightColor.rgb;
     return o;
 }
 

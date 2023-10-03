@@ -1,6 +1,8 @@
 #ifndef PN_SPRITE_SIMPLELIT_CORE_INCLUDED
 #define PN_SPRITE_SIMPLELIT_CORE_INCLUDED
 
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+
 // Texture
 TEXTURE2D(_MainTex);
 SAMPLER(sampler_MainTex);
