@@ -9,22 +9,28 @@
 TEXTURE2D(_MainTex);
 SAMPLER(sampler_MainTex);
 
+CBUFFER_START(UnityPerMaterial)
+
 // Main
 uniform half4 _MainTex_ST;
 uniform float4 _Color;
+uniform float4 _HideColor;
 uniform half4 _RendererColor;
-uniform float _lightMaxDistAtten;
-uniform float _pixelLightPower;
-uniform float _directionalLightPower;
+uniform float _DirectionalLightPower;
+uniform float _PixelLightMaxDistAtten;
+uniform float _PixelLightPower;
 
 // Outline
 uniform int _UseOutline;
 uniform float4 _OutlineColor;
 uniform float _Width;
 uniform float _WidthMult;
+uniform float4 _HideOutlineColor;
 
 // Billboard
 uniform int _UseBillboard;
+
+CBUFFER_END
 
 struct Attributes
 {
@@ -39,10 +45,9 @@ struct Varyings
     float4  positionCS  : SV_POSITION;
     half4   color       : COLOR;
     float2  uv          : TEXCOORD0;
+#ifdef PN_SPRITE_SIMPLELIT_UNIVERSAL
     float3  positionWS  : TEXCOORD2;
-    #if defined(DEBUG_DISPLAY)
-    
-    #endif
+#endif
     UNITY_VERTEX_OUTPUT_STEREO
 };
 

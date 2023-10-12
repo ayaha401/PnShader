@@ -21,7 +21,12 @@ Varyings UnlitVertex(Attributes v)
     o.color = v.color * _Color * _RendererColor;
 
     // Lighting
-    o.color.rgb *= _MainLightColor.rgb * _directionalLightPower;
+    float3 dlColor = _MainLightColor.rgb;
+    float3 dlColorHSV = RGBtoHSV(dlColor);
+    dlColorHSV.z = lerp(dlColorHSV.z, 1.0, _DirectionalLightPower);
+    dlColorHSV.z = PN_COMPARE_EPS(dlColorHSV.z);
+    dlColor = HSVtoRGB(dlColorHSV);
+    o.color.rgb *= dlColor;
 
     return o;
 }
@@ -37,12 +42,12 @@ float4 UnlitFragment(Varyings i) : SV_Target
     for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
     {
         Light light = GetAdditionalLight(lightIndex, i.positionWS);
-        float distanceAttenuation = lerp(0.0, PN_COMPARE_EPS(_lightMaxDistAtten), saturate(light.distanceAttenuation));
-        pixelLightColor = saturate(pixelLightColor + light.color.rgb * distanceAttenuation * _pixelLightPower);
+        float distanceAttenuation = lerp(0.0, PN_COMPARE_EPS(_PixelLightMaxDistAtten), saturate(light.distanceAttenuation));
+        pixelLightColor = saturate(pixelLightColor + light.color.rgb * distanceAttenuation * _PixelLightPower);
     }
 
     // Outline
-    float4 outlineCol = float4(0, 0, 0, 0);
+    float4 outlineCol = (float4)0.0;
     if(_UseOutline)
     {                    
         float width = max(_Width, 0.0) / _WidthMult;

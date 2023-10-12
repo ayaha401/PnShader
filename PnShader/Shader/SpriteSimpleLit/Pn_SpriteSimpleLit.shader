@@ -4,9 +4,9 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
     {
         // Main
         _MainTex("Sprite Texture", 2D) = "white" {}
-        _lightMaxDistAtten("Light Max Distance Attenuation", Range(0.0, 1.0)) = 0.5
-        _pixelLightPower("PixelLight Power", Range(0.0, 1.0)) = 1.0
-        _directionalLightPower("DirectionalLight Power", Range(0.0, 1.0)) = 1.0
+        _DirectionalLightPower("DirectionalLight Power", Range(0.0, 1.0)) = 1.0
+        _PixelLightMaxDistAtten("PixelLight Max Distance Attenuation", Range(0.0, 1.0)) = 0.5
+        _PixelLightPower("PixelLight Power", Range(0.0, 1.0)) = 1.0
 
         // Outline
         _UseOutline("Use Outline", int) = 0
@@ -64,6 +64,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/SurfaceData2D.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging2D.hlsl"
             #endif
+            #define PN_SPRITE_SIMPLELIT_UNIVERSAL
             #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteSimpleLitCore.hlsl"
             #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteLitForwardPass.hlsl"
 
@@ -90,6 +91,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/SurfaceData2D.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging2D.hlsl"
             #endif
+            #define PN_SPRITE_SIMPLELIT_UNIVERSAL
             #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteSimpleLitCore.hlsl"
             #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteLitForwardPass.hlsl"
 
@@ -122,38 +124,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
             #pragma vertex UnlitVertex
             #pragma fragment UnlitFragment
             #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteFunction.hlsl"
-
-            struct Attributes
-            {
-                float3 positionOS   : POSITION;
-                float4 color        : COLOR;
-                float2 uv           : TEXCOORD0;
-                UNITY_VERTEX_INPUT_INSTANCE_ID
-            };
-
-            struct Varyings
-            {
-                float4  positionCS      : SV_POSITION;
-                float4  color           : COLOR;
-                float2  uv              : TEXCOORD0;
-                UNITY_VERTEX_OUTPUT_STEREO
-            };
-
-            TEXTURE2D(_MainTex);
-            SAMPLER(sampler_MainTex);
-
-            // Main
-            uniform float4 _MainTex_ST;
-            uniform float4 _HideColor;
-
-            // HideOutline
-            uniform int _UseOutline;
-            uniform float4 _HideOutlineColor;
-            uniform float _Width;
-            uniform float _WidthMult;
-            
-            // Billboard
-            uniform int _UseBillboard;
+            #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteSimpleLitCore.hlsl"
 
             Varyings UnlitVertex(Attributes v)
             {
