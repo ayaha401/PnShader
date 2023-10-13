@@ -140,6 +140,8 @@ namespace AyahaShader.Pn
                         stencilParams.stencilCompMode.floatValue = (float)CompareFunction.Always;
                         stencilParams.stencilOp.floatValue = (float)StencilOp.Replace;
                         break;
+                    case StensilType.Custom:
+                        break;
                 }
                 materialEditor.ShaderProperty(stencilParams.stencilNum, new GUIContent("Stencil Number"));
                 materialEditor.ShaderProperty(stencilParams.stencilCompMode, new GUIContent("Stencil CompMode"));

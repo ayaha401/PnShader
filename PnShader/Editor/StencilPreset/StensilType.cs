@@ -5,5 +5,7 @@
         Default,
         Player,
         Wall,
+        Custom = 9999,
+
     }
 }
