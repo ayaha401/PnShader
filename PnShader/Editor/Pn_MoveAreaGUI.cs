@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEditor;
 using System;
 
@@ -6,8 +6,11 @@ namespace AyahaShader.Pn
 {
     public class Pn_MoveAreaGUI : ShaderGUI
     {
-        // Main
+        // MoveArea
         private MaterialProperty radius;
+        private MaterialProperty lineWidth;
+        private MaterialProperty objCrossLineWidth;
+        private MaterialProperty outlineColor;
         private MaterialProperty moveableColor;
 
         // Stencil
@@ -23,26 +26,29 @@ namespace AyahaShader.Pn
             var material = (Material)materialEditor.target;
             FindProperties(prop);
 
-            // ƒVƒF[ƒ_[‚Ìƒo[ƒWƒ‡ƒ“‚ğ•\‹L
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‚’è¡¨è¨˜
             PnCustomUI.Information();
 
             PnCustomUI.GUIPartition();
 
-            // ‰Šúó‘Ô‚ÌGUI‚ğ•\¦‚³‚¹‚é
+            // åˆæœŸçŠ¶æ…‹ã®GUIã‚’è¡¨ç¤ºã•ã›ã‚‹
             if (isBaseUi)
             { 
                 base.OnGUI(materialEditor, prop);
                 return;
             }
 
-            PnCustomUI.Title("Main");
+            PnCustomUI.Title("MoveArea");
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
                 materialEditor.ShaderProperty(radius, new GUIContent("Radius"));
+                materialEditor.ShaderProperty(lineWidth, new GUIContent("Line Width"));
+                materialEditor.ShaderProperty(objCrossLineWidth, new GUIContent("ObjCrossLine Width"));
+                materialEditor.ShaderProperty(outlineColor, new GUIContent("Outline Color"));
                 materialEditor.ShaderProperty(moveableColor, new GUIContent("Moveable Color"));
             }
 
-            // ƒAƒhƒoƒ“ƒXİ’è
+            // ã‚¢ãƒ‰ãƒãƒ³ã‚¹è¨­å®š
             advancedSettingsFoldout = PnCustomUI.Foldout("Advanced Settings", advancedSettingsFoldout);
             if (advancedSettingsFoldout)
             {
@@ -63,8 +69,11 @@ namespace AyahaShader.Pn
 
         private void FindProperties(MaterialProperty[] _Prop)
         {
-            // Main
+            // MoveArea
             radius = FindProperty("_Radius", _Prop, false);
+            lineWidth = FindProperty("_LineWidth", _Prop, false);
+            objCrossLineWidth = FindProperty("_ObjCrossLineWidth", _Prop, false);
+            outlineColor = FindProperty("_OutlineColor", _Prop, false);
             moveableColor = FindProperty("_MoveableColor", _Prop, false);
 
             // Stencil

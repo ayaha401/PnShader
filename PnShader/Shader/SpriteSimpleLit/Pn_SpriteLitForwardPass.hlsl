@@ -9,7 +9,7 @@ Varyings UnlitVertex(Attributes v)
     
     // Billboard
     float4x4 billboardMat = CalcBillboardMat(_UseBillboard);
-    o.positionWS = mul(billboardMat, float4(v.positionOS.xyz, 1.0));
+    o.positionWS = mul(billboardMat, float4(v.positionOS.xyz, 1.0)).xyz;
     
     // Vertex
     o.positionCS = Billboard(_UseBillboard, v.positionOS);
@@ -58,7 +58,7 @@ float4 UnlitFragment(Varyings i) : SV_Target
 
     // LastColor
     float alpha = (mainTex.a * i.color.a) + outlineCol.a;
-    float3 lastColor = (mainTex.rgb * i.color.rgb) + outlineCol;
+    float3 lastColor = (mainTex.rgb * i.color.rgb) + outlineCol.rgb;
     lastColor = saturate(lastColor + pixelLightColor);
 
 #if defined(DEBUG_DISPLAY)
