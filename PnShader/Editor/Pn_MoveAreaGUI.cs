@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System;
 
 namespace AyahaShader.Pn
 {
@@ -13,13 +12,9 @@ namespace AyahaShader.Pn
         private MaterialProperty outlineColor;
         private MaterialProperty moveableColor;
 
-        // Stencil
-        private MaterialProperty stencilNum;
-        private MaterialProperty stencilCompMode;
-        private MaterialProperty stencilOp;
-
         private bool isBaseUi = false;
         private bool advancedSettingsFoldout = false;
+
 
         public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] prop)
         {
@@ -52,18 +47,8 @@ namespace AyahaShader.Pn
             advancedSettingsFoldout = PnCustomUI.Foldout("Advanced Settings", advancedSettingsFoldout);
             if (advancedSettingsFoldout)
             {
-                // Stencil
-                PnCustomUI.Title("Stencil");
-                using (new EditorGUILayout.VerticalScope(GUI.skin.box))
-                {
-                    materialEditor.ShaderProperty(stencilNum, new GUIContent("Stencil Number"));
-                    materialEditor.ShaderProperty(stencilCompMode, new GUIContent("Stencil CompMode"));
-                    materialEditor.ShaderProperty(stencilOp, new GUIContent("Stencil Operation"));
-                }
-
                 // RenderQueue
-                PnCustomUI.Title("RenderQueue");
-                materialEditor.RenderQueueField();
+                PnCustomUI.RenderQueue(materialEditor);
             }
         }
 
@@ -75,11 +60,6 @@ namespace AyahaShader.Pn
             objCrossLineWidth = FindProperty("_ObjCrossLineWidth", _Prop, false);
             outlineColor = FindProperty("_OutlineColor", _Prop, false);
             moveableColor = FindProperty("_MoveableColor", _Prop, false);
-
-            // Stencil
-            stencilNum = FindProperty("_StencilNum", _Prop, false);
-            stencilCompMode = FindProperty("_StencilCompMode", _Prop, false);
-            stencilOp = FindProperty("_StencilOp", _Prop, false);
         }
     }
 }

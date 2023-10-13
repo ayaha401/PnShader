@@ -42,6 +42,7 @@ Shader "Universal Render Pipeline/Pn/SimpleLit"
         _DitherSize("Dither Size", float) = 1.0
 
         // Stencil
+        [HideInInspector]_StencilPreset("Stencil Preset", float) = 0
         _StencilNum("Stencil Number", int) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)]_StencilCompMode("Stencil CompMode", int) = 0
         [Enum(UnityEngine.Rendering.StencilOp)]_StencilOp("Stencil Operation", int) = 0

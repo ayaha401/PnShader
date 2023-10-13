@@ -1,4 +1,4 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEditor;
 using System;
 
@@ -20,6 +20,8 @@ namespace AyahaShader.Pn
         private MaterialProperty widthMult;
 
         // Stencil
+        private StensilType stensilType = StensilType.Default;
+        private MaterialProperty stencilPreset;
         private MaterialProperty hideColor;
         private MaterialProperty stencilNum;
         private MaterialProperty stencilCompMode;
@@ -34,12 +36,12 @@ namespace AyahaShader.Pn
             var material = (Material)materialEditor.target;
             FindProperties(prop);
 
-            // ÉVÉFÅ[É_Å[ÇÃÉoÅ[ÉWÉáÉìÇï\ãL
+            // „Ç∑„Çß„Éº„ÉÄ„Éº„ÅÆ„Éê„Éº„Ç∏„Éß„É≥„ÇíË°®Ë®ò
             PnCustomUI.Information();
 
             PnCustomUI.GUIPartition();
 
-            // èâä˙èÛë‘ÇÃGUIÇï\é¶Ç≥ÇπÇÈ
+            // ÂàùÊúüÁä∂ÊÖã„ÅÆGUI„ÇíË°®Á§∫„Åï„Åõ„Çã
             if(isBaseUi)
             {
                 base.OnGUI(materialEditor, prop);
@@ -85,23 +87,20 @@ namespace AyahaShader.Pn
                 material.SetInt(PnSpriteSimpleLitPropNames.USE_BILLBOARD_PROP_NAME, Convert.ToInt32(useBillboardToggle));
             }
 
-
-            // ÉAÉhÉoÉìÉXê›íË
+            // „Ç¢„Éâ„Éê„É≥„ÇπË®≠ÂÆö
             advancedSettingsFoldout = PnCustomUI.Foldout("Advanced Settings", advancedSettingsFoldout);
             if (advancedSettingsFoldout)
             {
                 // Stencil
-                PnCustomUI.Title("Stencil");
-                using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+                if (stencilPreset != null)
                 {
-                    materialEditor.ShaderProperty(stencilNum, new GUIContent("Stencil Number"));
-                    materialEditor.ShaderProperty(stencilCompMode, new GUIContent("Stencil CompMode"));
-                    materialEditor.ShaderProperty(stencilOp, new GUIContent("Stencil Operation"));
+                    stensilType = (StensilType)material.GetInt("_StencilPreset");
+                    StencilParams stencilParams = new StencilParams(stencilNum, stencilCompMode, stencilOp);
+                    PnCustomUI.StencilPreset(ref stensilType, stencilParams, material, materialEditor);
                 }
 
                 // RenderQueue
-                PnCustomUI.Title("RenderQueue");
-                materialEditor.RenderQueueField();
+                PnCustomUI.RenderQueue(materialEditor);
             }
         }
 
@@ -121,6 +120,7 @@ namespace AyahaShader.Pn
             widthMult = FindProperty("_WidthMult", _Prop, false);
 
             // Stencil
+            stencilPreset = FindProperty("_StencilPreset", _Prop, false);
             hideColor = FindProperty(PnSpriteSimpleLitPropNames.HIDE_COLOR_PROP_NAME, _Prop, false);
             stencilNum = FindProperty(PnSpriteSimpleLitPropNames.STENCIL_NUM_PROP_NAME, _Prop, false);
             stencilCompMode = FindProperty(PnSpriteSimpleLitPropNames.STENCIL_COMP_MODE_PROP_NAME, _Prop, false);

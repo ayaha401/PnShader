@@ -19,6 +19,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
         _UseBillboard("Use Billboard", int) = 0
         
         // Stencil
+        [HideInInspector]_StencilPreset("Stencil Preset", float) = 0
         _HideColor("Hide Color", Color) = (1,1,1,1)
         _StencilNum("Stencil Number", int) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)]_StencilCompMode("Stencil CompMode", int) = 0

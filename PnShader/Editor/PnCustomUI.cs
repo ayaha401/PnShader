@@ -1,5 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
+using UnityEngine.Rendering;
 
 namespace AyahaShader.Pn
 {
@@ -99,6 +100,51 @@ namespace AyahaShader.Pn
                         System.Diagnostics.Process.Start("");
                     }
                 }
+            }
+        }
+
+        public static void RenderQueue(MaterialEditor materialEditor)
+        {
+            Title("RenderQueue");
+            materialEditor.RenderQueueField();
+        }
+
+
+
+
+        public static void StencilPreset(ref StensilType stensilType, StencilParams stencilParams, Material material, MaterialEditor materialEditor)
+        {
+            Title("Stencil");
+            using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    EditorGUILayout.LabelField("Preset");
+                    stensilType = (StensilType)EditorGUILayout.EnumPopup(stensilType);
+                }
+
+                switch (stensilType)
+                {
+                    case StensilType.Default:
+                        stencilParams.stencilNum.floatValue = 0;
+                        stencilParams.stencilCompMode.floatValue = (float)CompareFunction.Always;
+                        stencilParams.stencilOp.floatValue = (float)StencilOp.Keep;
+                        break;
+                    case StensilType.Player:
+                        stencilParams.stencilNum.floatValue = 1;
+                        stencilParams.stencilCompMode.floatValue = (float)CompareFunction.Equal;
+                        stencilParams.stencilOp.floatValue = (float)StencilOp.Keep;
+                        break;
+                    case StensilType.Wall:
+                        stencilParams.stencilNum.floatValue = 1;
+                        stencilParams.stencilCompMode.floatValue = (float)CompareFunction.Always;
+                        stencilParams.stencilOp.floatValue = (float)StencilOp.Replace;
+                        break;
+                }
+                materialEditor.ShaderProperty(stencilParams.stencilNum, new GUIContent("Stencil Number"));
+                materialEditor.ShaderProperty(stencilParams.stencilCompMode, new GUIContent("Stencil CompMode"));
+                materialEditor.ShaderProperty(stencilParams.stencilOp, new GUIContent("Stencil Operation"));
+                material.SetInt("_StencilPreset", (int)stensilType);
             }
         }
     }

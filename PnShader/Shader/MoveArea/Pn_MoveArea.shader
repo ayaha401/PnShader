@@ -8,11 +8,6 @@ Shader "Universal Render Pipeline/Pn/MoveArea"
         _ObjCrossLineWidth("ObjCrossLine Width", Range(0.0, 1.0)) = 0.25
         _OutlineColor("Outline Color", Color) = (0, 0.25, 0.75, 1.0)
         _MoveableColor("Moveable Color", Color) = (0, 0.6, 0.75, 1.0)
-
-        // Stencil
-        _StencilNum("Stencil Number", int) = 0
-        [Enum(UnityEngine.Rendering.CompareFunction)]_StencilCompMode("Stencil CompMode", int) = 0
-        [Enum(UnityEngine.Rendering.StencilOp)]_StencilOp("Stencil Operation", int) = 0
     }
     SubShader
     {
@@ -25,13 +20,6 @@ Shader "Universal Render Pipeline/Pn/MoveArea"
 
         Blend SrcAlpha OneMinusSrcAlpha
         ZWrite On
-
-        Stencil
-        {
-            Ref[_StencilNum]
-            Comp[_StencilCompMode]
-            Pass[_StencilOp]
-        }
 
         Pass
         {

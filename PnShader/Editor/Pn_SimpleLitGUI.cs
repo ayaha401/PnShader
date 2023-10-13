@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -22,6 +22,8 @@ namespace AyahaShader.Pn
         private MaterialProperty ditherSize;
 
         // Stensil
+        private StensilType stensilType = StensilType.Default;
+        private MaterialProperty stencilPreset;
         private MaterialProperty stencilNum;
         private MaterialProperty stencilCompMode;
         private MaterialProperty stencilOp;
@@ -44,6 +46,7 @@ namespace AyahaShader.Pn
             ditherSize = FindProperty("_DitherSize", properties, false);
 
             // Stensil
+            stencilPreset = FindProperty("_StencilPreset", properties, false);
             stencilNum = FindProperty("_StencilNum", properties, false);
             stencilCompMode = FindProperty("_StencilCompMode", properties, false);
             stencilOp = FindProperty("_StencilOp", properties, false);
@@ -86,16 +89,18 @@ namespace AyahaShader.Pn
             {
                 materialEditor.ShaderProperty(zWrite, new GUIContent("ZWrite"));
             }
-            //Debug.Log(zwriteProp)
 
             // Stensil
-            PnCustomUI.Title("Stensil");
-            materialEditor.ShaderProperty(stencilNum, new GUIContent("Stencil Number"));
-            materialEditor.ShaderProperty(stencilCompMode, new GUIContent("Stencil CompMode"));
-            materialEditor.ShaderProperty(stencilOp, new GUIContent("Stencil Operation"));
+            if(stencilPreset != null)
+            {
+                stensilType = (StensilType)material.GetInt("_StencilPreset");
+                StencilParams stencilParams = new StencilParams(stencilNum, stencilCompMode, stencilOp);
+                PnCustomUI.StencilPreset(ref stensilType, stencilParams, material, materialEditor);
+            }
+            
 
             // Dither
-            if(useDither != null)
+            if (useDither != null)
             {
                 useDitherFoldout = material.GetInt("_UseDither") == 1 ? true : false;
                 useDitherFoldout = PnCustomUI.ToggleFoldout("Dither", useDitherFoldout);
@@ -116,8 +121,7 @@ namespace AyahaShader.Pn
             }
 
             // RenderQueue
-            PnCustomUI.Title("RenderQueue");
-            materialEditor.RenderQueueField();
+            PnCustomUI.RenderQueue(materialEditor);
         }
 
         public override void AssignNewShaderToMaterial(Material material, Shader oldShader, Shader newShader)
