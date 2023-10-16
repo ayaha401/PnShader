@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System;
+using UnityEngine.Rendering;
 
 namespace AyahaShader.Pn
 {
@@ -39,10 +40,8 @@ namespace AyahaShader.Pn
             // シェーダーのバージョンを表記
             PnCustomUI.Information();
 
-            PnCustomUI.GUIPartition();
-
             // 初期状態のGUIを表示させる
-            if(isBaseUi)
+            if (isBaseUi)
             {
                 base.OnGUI(materialEditor, prop);
                 return;
@@ -58,7 +57,7 @@ namespace AyahaShader.Pn
                 materialEditor.ShaderProperty(pixelLightPower, new GUIContent("PixelLight Power"));
             }
 
-            if(useOutline != null)
+            if (useOutline != null)
             {
                 useOutlineFoldout = material.GetInt(PnSpriteSimpleLitPropNames.USE_OUTLINE_PROP_NAME) == 1 ? true : false;
                 useOutlineFoldout = PnCustomUI.ToggleFoldout("Outline", useOutlineFoldout);

@@ -163,6 +163,29 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
 
             ENDHLSL
         }
+
+        Pass
+        {
+            Name "ShadowCaster"
+            Tags
+            {
+                "LightMode" = "ShadowCaster"
+            }
+
+            ZWrite On
+            ZTest LEqual
+            ColorMask 0
+
+
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteSimpleLitCore.hlsl"
+            #include "Assets/AyahaShader/PnShader/Shader/SpriteSimpleLit/Pn_SpriteShadowCaster.hlsl"
+
+            ENDHLSL
+        }
     }
 
     Fallback "Sprites/Default"
