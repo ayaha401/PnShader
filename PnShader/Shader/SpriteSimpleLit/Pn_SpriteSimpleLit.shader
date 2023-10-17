@@ -41,6 +41,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
             "Queue" = "Transparent"
             "RenderType" = "Transparent" 
             "RenderPipeline" = "UniversalPipeline" 
+            "PreviewType" = "Plane"
         }
 
         Blend SrcAlpha OneMinusSrcAlpha

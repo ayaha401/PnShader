@@ -16,6 +16,7 @@ Shader "Universal Render Pipeline/Pn/MoveArea"
             "RenderType" = "Transparent"
             "Queue" = "Transparent"
             "RenderPipeline" = "UniversalPipeline"
+            "PreviewType" = "Plane"
         }
 
         Blend SrcAlpha OneMinusSrcAlpha
