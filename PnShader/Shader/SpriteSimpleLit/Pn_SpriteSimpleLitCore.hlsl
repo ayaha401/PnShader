@@ -13,6 +13,7 @@ CBUFFER_START(UnityPerMaterial)
 
 // Main
 uniform half4 _MainTex_ST;
+uniform float4 _MainTex_TexelSize;
 uniform float4 _Color;
 uniform float4 _HideColor;
 uniform half4 _RendererColor;

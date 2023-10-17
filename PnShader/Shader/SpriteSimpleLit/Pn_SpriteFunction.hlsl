@@ -61,12 +61,12 @@ float4x4 CalcBillboardMat(int enable)
 
 // Outline
 // ex) float outline = Outline(_MainTex, sampler_MainTex, i.uv, mainTex.a, width);
-float Outline(Texture2D tex, SamplerState state,  float2 uv, float alpha, float outlineWidth)
+float Outline(Texture2D tex, SamplerState state,  float2 uv, float alpha, float2 outlineWidth)
 {
-    float leftShift = SAMPLE_TEXTURE2D(tex, state, float2(uv.x + outlineWidth, uv.y)).a;
-    float rightShift = SAMPLE_TEXTURE2D(tex, state, float2(uv.x - outlineWidth, uv.y)).a;
-    float upShift = SAMPLE_TEXTURE2D(tex, state, float2(uv.x, uv.y + outlineWidth)).a;
-    float downShift = SAMPLE_TEXTURE2D(tex, state, float2(uv.x, uv.y - outlineWidth)).a;
+    float leftShift = SAMPLE_TEXTURE2D(tex, state, float2(uv.x + outlineWidth.x, uv.y)).a;
+    float rightShift = SAMPLE_TEXTURE2D(tex, state, float2(uv.x - outlineWidth.x, uv.y)).a;
+    float upShift = SAMPLE_TEXTURE2D(tex, state, float2(uv.x, uv.y + outlineWidth.y)).a;
+    float downShift = SAMPLE_TEXTURE2D(tex, state, float2(uv.x, uv.y - outlineWidth.y)).a;
 
     return saturate((leftShift - alpha) + (rightShift - alpha) + (upShift - alpha) + (downShift - alpha));
 }

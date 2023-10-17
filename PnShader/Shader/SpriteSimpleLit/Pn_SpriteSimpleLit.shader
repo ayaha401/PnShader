@@ -150,7 +150,8 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 float4 outlineCol = float4(0, 0, 0, 0);
                 if(_UseOutline)
                 {
-                    float width = max(_Width, 0.0) / _WidthMult;
+                    float2 width = max(_Width, 0.0) / _WidthMult;
+                    width /= _MainTex_TexelSize.zw;
                     float outline = Outline(_MainTex, sampler_MainTex, i.uv, mainTex.a, width);
                     outlineCol.rgb = outline.xxx * _HideOutlineColor.rgb;
                     outlineCol.a = outline.x * _HideOutlineColor.a * i.color.a;

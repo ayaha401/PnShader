@@ -50,7 +50,8 @@ float4 UnlitFragment(Varyings i) : SV_Target
     float4 outlineCol = (float4)0.0;
     if(_UseOutline)
     {                    
-        float width = max(_Width, 0.0) / _WidthMult;
+        float2 width = max(_Width, 0.0) / _WidthMult;
+        width /= _MainTex_TexelSize.zw;
         float outline = Outline(_MainTex, sampler_MainTex, i.uv, mainTex.a, width);
         outlineCol.rgb = outline.xxx * _OutlineColor.rgb;
         outlineCol.a = outline.x * _OutlineColor.a * i.color.a;
