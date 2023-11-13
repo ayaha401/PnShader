@@ -20,6 +20,8 @@ uniform half4 _RendererColor;
 uniform float _DirectionalLightPower;
 uniform float _PixelLightMaxDistAtten;
 uniform float _PixelLightPower;
+uniform float3 _FillColor;
+uniform float _FillColorMix;
 
 // Outline
 uniform int _UseOutline;

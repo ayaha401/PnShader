@@ -36,6 +36,9 @@ float4 UnlitFragment(Varyings i) : SV_Target
     // Main
     float4 mainTex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
 
+    // FillColor
+    mainTex.rgb = lerp(mainTex, _FillColor.rgb, _FillColorMix) * mainTex.a;
+
     // Lighting
     float3 pixelLightColor = (float3)0.0;
     uint pixelLightCount = GetAdditionalLightsCount();
