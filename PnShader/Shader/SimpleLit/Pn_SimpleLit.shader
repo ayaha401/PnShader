@@ -40,6 +40,7 @@ Shader "Universal Render Pipeline/Pn/SimpleLit"
         _FadeStart("Fade Start", float) = 5.0
         _FadeEnd("Fade End", float) = 10.0
         _DitherSize("Dither Size", float) = 1.0
+        _Fade("Fade", Range(0.0, 1.0)) = 0.0
 
         // Stencil
         [HideInInspector]_StencilPreset("Stencil Preset", float) = 0

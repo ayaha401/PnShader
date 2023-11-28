@@ -18,6 +18,7 @@ CBUFFER_START(UnityPerMaterial)
     uniform float _FadeStart;
     uniform float _FadeEnd;
     uniform float _DitherSize;
+    uniform float _Fade;
 CBUFFER_END
 
 #ifdef UNITY_DOTS_INSTANCING_ENABLED

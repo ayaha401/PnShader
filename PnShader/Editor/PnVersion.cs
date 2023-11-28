@@ -2,7 +2,7 @@
 {
     public static class PnVersion
     {
-        private static string version = "1.12.1";
+        private static string version = "1.12.2";
         public static string GetPnVersion()
         {
             return version;

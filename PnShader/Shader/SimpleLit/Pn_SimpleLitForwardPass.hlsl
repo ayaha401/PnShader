@@ -198,11 +198,15 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     // Dither
     if(_UseDither)
     {
-        float dist = distance(_WorldSpaceCameraPos, input.positionWS);
-        dist = smoothstep(_FadeStart, _FadeEnd, dist);
-        dist = lerp(0.0, 1.0, dist);
-        float dither = Dither(dist, (float4(input.NDCPosition, 0.0, 0.0) / _DitherSize));
-        clip(dist != 1.0 ? dither - _Cutoff : 1.0);
+        float dither = Dither(0.5, (float4(input.NDCPosition, 0.0, 0.0) / _DitherSize));
+        if(dither - _Cutoff < 0.0)
+        {
+            color.a = saturate(lerp(1.0, 0.0, _Fade * 2.0));
+        }
+        else
+        {
+            color.a = 1.0 - _Fade;
+        }
     }
     
     return color;

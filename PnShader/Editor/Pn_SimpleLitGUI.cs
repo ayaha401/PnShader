@@ -17,9 +17,8 @@ namespace AyahaShader.Pn
 
         // Dither
         private MaterialProperty useDither;
-        private MaterialProperty fadeStart;
-        private MaterialProperty fadeEnd;
         private MaterialProperty ditherSize;
+        private MaterialProperty fade;
 
         // Stensil
         private StensilType stensilType = StensilType.Default;
@@ -41,9 +40,8 @@ namespace AyahaShader.Pn
 
             // Dither
             useDither = FindProperty("_UseDither", properties, false);
-            fadeStart = FindProperty("_FadeStart", properties, false);
-            fadeEnd = FindProperty("_FadeEnd", properties, false);
             ditherSize = FindProperty("_DitherSize", properties, false);
+            fade = FindProperty("_Fade", properties, false);
 
             // Stensil
             stencilPreset = FindProperty("_StencilPreset", properties, false);
@@ -109,9 +107,8 @@ namespace AyahaShader.Pn
                     material.SetInt("_UseDither", 1);
                     using (new EditorGUILayout.VerticalScope(GUI.skin.box))
                     {
-                        materialEditor.ShaderProperty(fadeStart, new GUIContent("Fade Start"));
-                        materialEditor.ShaderProperty(fadeEnd, new GUIContent("Fade End"));
                         materialEditor.ShaderProperty(ditherSize, new GUIContent("Dither Size"));
+                        materialEditor.ShaderProperty(fade, new GUIContent("Fade"));
                     }
                 }
                 else
