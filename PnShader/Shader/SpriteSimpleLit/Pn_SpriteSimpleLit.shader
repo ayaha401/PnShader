@@ -162,8 +162,8 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 }
 
                 // LastColor
-                float3 hideColor = lerp(mainTex.rgb, _HideColor.rgb, _UseStencil);
-                float4 lastCol = float4((Monochrome(mainTex.rgb) * hideColor) + outlineCol.rgb, mainTex.a * i.color.a + outlineCol.a);
+                float3 hideColor = lerp(mainTex.rgb, Monochrome(mainTex.rgb) * _HideColor.rgb, _UseStencil);
+                float4 lastCol = float4(hideColor + outlineCol.rgb, mainTex.a * i.color.a + outlineCol.a);
                 return lastCol;
             }
 
