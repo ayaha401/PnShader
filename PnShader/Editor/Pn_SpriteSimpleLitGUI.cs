@@ -99,6 +99,9 @@ namespace AyahaShader.Pn
                     stensilType = (StensilType)material.GetInt("_StencilPreset");
                     StencilParams stencilParams = new StencilParams(stencilNum, stencilCompMode, stencilOp);
                     PnCustomUI.StencilPreset(ref stensilType, stencilParams, material, materialEditor);
+                    bool useStencilToggle = material.GetInt(PnSpriteSimpleLitPropNames.USE_STENCIL_PROP_NAME) == 1 ? true : false;
+                    useStencilToggle = GUILayout.Toggle(useStencilToggle, new GUIContent("Use Stencil"));
+                    material.SetInt(PnSpriteSimpleLitPropNames.USE_STENCIL_PROP_NAME, Convert.ToInt32(useStencilToggle));
                 }
 
                 // RenderQueue

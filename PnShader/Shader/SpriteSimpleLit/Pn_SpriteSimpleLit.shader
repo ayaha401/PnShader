@@ -21,6 +21,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
         _UseBillboard("Use Billboard", int) = 0
         
         // Stencil
+        _UseStencil("Use Stencil", int) = 1
         [HideInInspector]_StencilPreset("Stencil Preset", float) = 0
         _HideColor("Hide Color", Color) = (1,1,1,1)
         _StencilNum("Stencil Number", int) = 0
@@ -161,7 +162,8 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
                 }
 
                 // LastColor
-                float4 lastCol = float4(_HideColor.rgb + outlineCol.rgb, mainTex.a * i.color.a + outlineCol.a);
+                float3 hideColor = lerp(mainTex.rgb, _HideColor.rgb, _UseStencil);
+                float4 lastCol = float4((Monochrome(mainTex.rgb) * hideColor) + outlineCol.rgb, mainTex.a * i.color.a + outlineCol.a);
                 return lastCol;
             }
 

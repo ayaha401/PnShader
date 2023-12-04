@@ -19,8 +19,9 @@
 
         // Billboard
         public const string USE_BILLBOARD_PROP_NAME = "_UseBillboard";
-       
+
         // Stencil
+        public const string USE_STENCIL_PROP_NAME = "_UseStencil";
         public const string HIDE_COLOR_PROP_NAME = "_HideColor";
         public const string STENCIL_NUM_PROP_NAME = "_StencilNum";
         public const string STENCIL_COMP_MODE_PROP_NAME = "_StencilCompMode";

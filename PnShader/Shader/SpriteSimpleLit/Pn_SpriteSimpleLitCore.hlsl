@@ -15,7 +15,6 @@ CBUFFER_START(UnityPerMaterial)
 uniform half4 _MainTex_ST;
 uniform float4 _MainTex_TexelSize;
 uniform float4 _Color;
-uniform float4 _HideColor;
 uniform half4 _RendererColor;
 uniform float _DirectionalLightPower;
 uniform float _PixelLightMaxDistAtten;
@@ -32,6 +31,11 @@ uniform float4 _HideOutlineColor;
 
 // Billboard
 uniform int _UseBillboard;
+
+// Stencil
+uniform int _UseStencil;
+uniform float4 _HideColor;
+
 
 CBUFFER_END
 

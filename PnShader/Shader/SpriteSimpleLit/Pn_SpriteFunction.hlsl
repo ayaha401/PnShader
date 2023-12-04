@@ -90,4 +90,8 @@ float3 HSVtoRGB(float3 In)
     return In.z * lerp(K.xxx, saturate(P - K.xxx), In.y);
 }
 
+float Monochrome(float3 col)
+{
+    return dot(col, float3(0.299f, 0.587f, 0.114f));
+}
 #endif
