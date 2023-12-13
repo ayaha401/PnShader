@@ -198,15 +198,8 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     // Dither
     if(_UseDither)
     {
-        float dither = Dither(0.5, (float4(input.NDCPosition, 0.0, 0.0) / _DitherSize));
-        if(dither - _Cutoff < 0.0)
-        {
-            color.a = saturate(lerp(1.0, 0.0, _Fade * 2.0));
-        }
-        else
-        {
-            color.a = 1.0 - _Fade;
-        }
+        float dither = Dither(_Fade, (float4(input.NDCPosition, 0.0, 0.0) / _DitherSize));
+        clip(dither - _Cutoff);
     }
     
     return color;
