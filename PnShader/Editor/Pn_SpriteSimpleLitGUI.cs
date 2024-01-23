@@ -52,7 +52,8 @@ namespace AyahaShader.Pn
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
                 materialEditor.TextureProperty(mainTex, "MainTex");
-                materialEditor.ColorProperty(hideColor, "HideColor");
+                //materialEditor.ColorProperty(hideColor, "HideColor");
+                materialEditor.ShaderProperty(hideColor, "HideColor");
                 materialEditor.ShaderProperty(directionalLightPower, new GUIContent("DirectionalLight Power"));
                 materialEditor.ShaderProperty(pixelLightMaxDistAtten, new GUIContent("PixelLight Max Distance Attenuation"));
                 materialEditor.ShaderProperty(pixelLightPower, new GUIContent("PixelLight Power"));

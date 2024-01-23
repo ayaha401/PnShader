@@ -16,4 +16,6 @@ float Dither(float value, float4 screenPosition)
     return value - DITHER_THRESHOLDS[index];
 }
 
+
+
 #endif

@@ -7,7 +7,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
         _DirectionalLightPower("DirectionalLight Power", Range(0.0, 1.0)) = 1.0
         _PixelLightMaxDistAtten("PixelLight Max Distance Attenuation", Range(0.0, 1.0)) = 0.5
         _PixelLightPower("PixelLight Power", Range(0.0, 1.0)) = 1.0
-        _FillColor("Fill Color", Color) = (1,1,1,1)
+        [HDR]_FillColor("Fill Color", Color) = (1,1,1,1)
         _FillColorMix("Fill Color Mix", Range(0.0, 1.0)) = 0.0
 
         // Outline
@@ -23,7 +23,7 @@ Shader "Universal Render Pipeline/Pn/SpriteSimpleLit"
         // Stencil
         _UseStencil("Use Stencil", int) = 1
         [HideInInspector]_StencilPreset("Stencil Preset", float) = 0
-        _HideColor("Hide Color", Color) = (1,1,1,1)
+        [HDR]_HideColor("Hide Color", Color) = (1,1,1,1)
         _StencilNum("Stencil Number", int) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)]_StencilCompMode("Stencil CompMode", int) = 0
         [Enum(UnityEngine.Rendering.StencilOp)]_StencilOp("Stencil Operation", int) = 0
